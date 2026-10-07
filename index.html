@@ -341,8 +341,21 @@
         <!-- RIGHT COLUMN: Laporan Pemasukan, Pengeluaran & Export Word (5 cols on lg) -->
         <section class="lg:col-span-5 space-y-5">
             
-            <!-- Summary Stats Cards (4 Dashboard Stats) -->
+            <!-- Summary Stats Cards (Dashboard Stats + SALDO KAS TOKO) -->
             <div class="grid grid-cols-2 gap-3">
+                
+                <!-- CARD SALDO KAS TOKO -->
+                <div class="bg-gradient-to-br from-blue-900 to-indigo-900 p-3.5 rounded-xl border border-blue-700 shadow-sm flex flex-col justify-between text-white col-span-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-bold text-blue-200 uppercase tracking-wider">Total Saldo Toko saat ini</span>
+                        <i class="fa-solid fa-piggy-bank text-amber-400 text-sm"></i>
+                    </div>
+                    <div class="flex items-baseline justify-between mt-1">
+                        <span class="text-xl sm:text-2xl font-black text-emerald-400 tracking-tight" id="statTotalBalance">Rp 0</span>
+                        <span class="text-[10px] text-blue-200" id="statBalanceSummary">Pemasukan - Pengeluaran</span>
+                    </div>
+                </div>
+
                 <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
                     <div class="flex items-center justify-between">
                         <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Pemasukan Hari Ini</span>
@@ -364,7 +377,7 @@
                 <!-- LABA BERSIH HIGHLIGHT CARD WITH QUICK RECAP LINK -->
                 <div class="bg-gradient-to-br from-slate-900 to-slate-800 p-3.5 rounded-xl border border-slate-700 shadow-sm flex flex-col justify-between text-white col-span-2 sm:col-span-1">
                     <div class="flex items-center justify-between">
-                        <span class="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Keuntungan Bersih</span>
+                        <span class="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Keuntungan Bersih Hari Ini</span>
                         <i class="fa-solid fa-chart-line text-amber-400 text-xs"></i>
                     </div>
                     <span class="text-lg sm:text-xl font-black text-amber-400 mt-1" id="statTodayProfit">Rp 0</span>
@@ -403,7 +416,7 @@
                 <!-- Export Word Action Button -->
                 <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl space-y-2">
                     <p class="text-xs text-blue-800">
-                        <i class="fa-solid fa-circle-info mr-1"></i> File Word mencakup rincian Pemasukan, Pengeluaran, serta Rincian Laba Bersih.
+                        <i class="fa-solid fa-circle-info mr-1"></i> File Word mencakup rincian Pemasukan, Pengeluaran, Saldo Kas, serta Rincian Laba Bersih.
                     </p>
                     <button onclick="exportToWordDocument()" class="w-full py-2.5 bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold rounded-lg shadow flex items-center justify-center gap-2 transition active:scale-95">
                         <i class="fa-solid fa-download"></i> DOWNLOAD FILE WORD LAPORAN (.DOC)
@@ -448,7 +461,7 @@
 
     </main>
 
-    <!-- MODAL BARU: REKAP PENGHASILAN & KEUNTUNGAN HARIAN DAN BULANAN -->
+    <!-- MODAL REKAP PENGHASILAN & KEUNTUNGAN HARIAN DAN BULANAN -->
     <div id="recapModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 hidden no-print">
         <div class="bg-white rounded-2xl max-w-4xl w-full shadow-2xl overflow-hidden border border-slate-200 flex flex-col max-h-[92vh]">
             
@@ -460,7 +473,7 @@
                     </div>
                     <div>
                         <h3 class="font-bold text-base sm:text-lg">Rekapitulasi Penghasilan & Keuangan</h3>
-                        <p class="text-xs text-slate-400">Pencatatan Omset, Pengeluaran Toko & Laba Bersih</p>
+                        <p class="text-xs text-slate-400">Pencatatan Omset, Pengeluaran Toko, Saldo Kas & Laba Bersih</p>
                     </div>
                 </div>
 
@@ -499,6 +512,18 @@
                     <div class="flex flex-wrap gap-1">
                         <button onclick="setRecapQuickDate('today')" class="px-3 py-1 text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-md hover:bg-emerald-100">Hari Ini</button>
                         <button onclick="setRecapQuickDate('yesterday')" class="px-3 py-1 text-xs font-semibold bg-white text-slate-600 border border-slate-300 rounded-md hover:bg-slate-100">Kemarin</button>
+                    </div>
+                </div>
+
+                <!-- BANNER SALDO KAS PADA REKAP HARIAN -->
+                <div class="bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-950 p-4 rounded-xl text-white flex flex-wrap justify-between items-center gap-3 border border-blue-800 shadow-sm">
+                    <div>
+                        <span class="text-[10px] font-bold text-blue-300 uppercase tracking-wider block">Sisa Saldo Kas Toko Kumulatif</span>
+                        <span class="text-2xl font-black text-emerald-400" id="recapCumulativeBalance">Rp 0</span>
+                    </div>
+                    <div class="text-right text-[11px] text-blue-200 space-y-0.5">
+                        <div>Total Semua Pemasukan: <span class="font-bold text-white" id="recapTotalAllIncome">Rp 0</span></div>
+                        <div>Total Semua Pengeluaran: <span class="font-bold text-rose-300" id="recapTotalAllExpense">Rp 0</span></div>
                     </div>
                 </div>
 
@@ -547,7 +572,7 @@
                 <div>
                     <div class="flex items-center justify-between mb-2">
                         <h4 class="font-bold text-slate-800 uppercase text-[11px] flex items-center gap-1.5">
-                            <i class="fa-solid fa-calendar-days text-brand-600"></i> Riwayat Ringkasan Omset Harian
+                            <i class="fa-solid fa-calendar-days text-brand-600"></i> Riwayat Ringkasan Omset & Saldo Harian
                         </h4>
                         <span class="text-[10px] text-slate-400">Klik baris untuk melihat rincian tanggal</span>
                     </div>
@@ -584,6 +609,18 @@
                     <div class="flex gap-1">
                         <button onclick="setRecapQuickMonth('current')" class="px-3 py-1 text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-md hover:bg-emerald-100">Bulan Ini</button>
                         <button onclick="setRecapQuickMonth('last')" class="px-3 py-1 text-xs font-semibold bg-white text-slate-600 border border-slate-300 rounded-md hover:bg-slate-100">Bulan Lalu</button>
+                    </div>
+                </div>
+
+                <!-- BANNER SALDO BULANAN -->
+                <div class="bg-gradient-to-r from-slate-900 via-indigo-900 to-slate-900 p-4 rounded-xl text-white flex flex-wrap justify-between items-center gap-3 border border-indigo-700 shadow-sm">
+                    <div>
+                        <span class="text-[10px] font-bold text-indigo-200 uppercase tracking-wider block">Saldo Kas Akhir Bulan Ini</span>
+                        <span class="text-2xl font-black text-amber-400" id="mRecapMonthlyBalance">Rp 0</span>
+                    </div>
+                    <div class="text-right text-[11px] text-slate-300">
+                        <div>Pemasukan Bulan Ini: <span class="font-bold text-emerald-400" id="mRecapMonthlyIncomeText">Rp 0</span></div>
+                        <div>Pengeluaran Bulan Ini: <span class="font-bold text-rose-400" id="mRecapMonthlyExpenseText">Rp 0</span></div>
                     </div>
                 </div>
 
@@ -671,7 +708,7 @@
         </div>
     </div>
 
-    <!-- MODAL: Settings Modal (Dengan Setting Pengeluaran Toko) -->
+    <!-- MODAL: Settings Modal -->
     <div id="settingsModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
         <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden border border-slate-200 flex flex-col max-h-[90vh]">
             <div class="bg-slate-900 px-6 py-4 text-white flex justify-between items-center flex-shrink-0">
@@ -760,7 +797,7 @@
                     </button>
                 </div>
 
-                <!-- TAB 3: FITUR BARU - PRESET & KATEGORI PENGELUARAN TOKO -->
+                <!-- TAB 3: PRESET & KATEGORI PENGELUARAN TOKO -->
                 <div id="setTabExpense" class="space-y-4 hidden">
                     <div class="bg-rose-50 border border-rose-200 p-3 rounded-lg text-xs text-rose-800 space-y-1">
                         <p class="font-bold flex items-center gap-1">
@@ -1667,6 +1704,17 @@
         }
 
         window.updateSummaryStats = function() {
+            // Calculate Total Overall Balance (Pemasukan - Pengeluaran)
+            const allIncome = window.transactions.filter(t => t.type !== 'EXPENSE').reduce((sum, t) => sum + (t.totalAmount || 0), 0);
+            const allExpense = window.transactions.filter(t => t.type === 'EXPENSE').reduce((sum, t) => sum + (t.totalAmount || 0), 0);
+            const totalBalance = allIncome - allExpense;
+
+            const balanceEl = document.getElementById('statTotalBalance');
+            if (balanceEl) {
+                balanceEl.innerText = `${totalBalance < 0 ? '-' : ''}Rp ${window.formatNumber(Math.abs(totalBalance))}`;
+                balanceEl.className = totalBalance >= 0 ? 'text-xl sm:text-2xl font-black text-emerald-400 tracking-tight' : 'text-xl sm:text-2xl font-black text-rose-400 tracking-tight';
+            }
+
             const todayTx = window.getFilteredTransactions('today');
             
             const incomeTx = todayTx.filter(t => t.type !== 'EXPENSE');
@@ -1810,6 +1858,17 @@
             const dateFormattedLong = dateObj.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             
             document.getElementById('recapFooterPeriodDisplay').innerText = `Periode Rekap: ${dateFormattedLong}`;
+
+            // Saldo Kas Kumulatif Toko
+            const allIncome = window.transactions.filter(t => t.type !== 'EXPENSE').reduce((sum, t) => sum + (t.totalAmount || 0), 0);
+            const allExpense = window.transactions.filter(t => t.type === 'EXPENSE').reduce((sum, t) => sum + (t.totalAmount || 0), 0);
+            const totalCumulativeBalance = allIncome - allExpense;
+
+            if (document.getElementById('recapCumulativeBalance')) {
+                document.getElementById('recapCumulativeBalance').innerText = `${totalCumulativeBalance < 0 ? '-' : ''}Rp ${window.formatNumber(Math.abs(totalCumulativeBalance))}`;
+            }
+            if (document.getElementById('recapTotalAllIncome')) document.getElementById('recapTotalAllIncome').innerText = `Rp ${window.formatNumber(allIncome)}`;
+            if (document.getElementById('recapTotalAllExpense')) document.getElementById('recapTotalAllExpense').innerText = `Rp ${window.formatNumber(allExpense)}`;
 
             // Filter transaksi tanggal terpilih
             const dayTxs = window.transactions.filter(t => t.timestamp && t.timestamp.startsWith(selectedDateStr));
@@ -2005,6 +2064,13 @@
             const netProfit = totalIncome - totalExpense;
             const totalSheets = incomeTxs.reduce((sum, t) => sum + (t.totalSheets || 0), 0);
 
+            // Update Saldo Bulanan Banner
+            if (document.getElementById('mRecapMonthlyBalance')) {
+                document.getElementById('mRecapMonthlyBalance').innerText = `${netProfit < 0 ? '-' : ''}Rp ${window.formatNumber(Math.abs(netProfit))}`;
+            }
+            if (document.getElementById('mRecapMonthlyIncomeText')) document.getElementById('mRecapMonthlyIncomeText').innerText = `Rp ${window.formatNumber(totalIncome)}`;
+            if (document.getElementById('mRecapMonthlyExpenseText')) document.getElementById('mRecapMonthlyExpenseText').innerText = `Rp ${window.formatNumber(totalExpense)}`;
+
             // Group by days
             const daySet = new Set(monthTxs.map(t => t.timestamp.slice(0, 10)));
             const activeDaysCount = daySet.size || 1;
@@ -2178,7 +2244,7 @@
             window.print();
         }
 
-        // ==================== FITUR PENGATURAN PENGELUARAN ====================
+        // ==================== FITUR PENGATURAN ====================
         
         window.openSettingsModal = function(defaultTab = 'general') {
             document.getElementById('settingShopName').value = window.settings.shopName || '';
@@ -2476,6 +2542,11 @@
             const totalExpense = expenseTxs.reduce((s, t) => s + (t.totalAmount || 0), 0);
             const netProfit = totalIncome - totalExpense;
 
+            // Balance Keseluruhan
+            const allIncome = window.transactions.filter(t => t.type !== 'EXPENSE').reduce((sum, t) => sum + (t.totalAmount || 0), 0);
+            const allExpense = window.transactions.filter(t => t.type === 'EXPENSE').reduce((sum, t) => sum + (t.totalAmount || 0), 0);
+            const totalBalance = allIncome - allExpense;
+
             let rowsHtml = '';
             txs.forEach((t, index) => {
                 const dateObj = new Date(t.timestamp);
@@ -2516,9 +2587,10 @@
                     <div class="summary-box">
                         <h3 style="margin-top:0; color: #0f172a;">RINGKASAN LAPORAN KEUANGAN</h3>
                         <table style="border: none;">
-                            <tr><td style="padding: 4px;">Total Pemasukan (Omset)</td><td>: <b>Rp ${window.formatNumber(totalIncome)}</b></td></tr>
-                            <tr><td style="padding: 4px;">Total Pengeluaran Toko</td><td>: <b style="color: #dc2626;">Rp ${window.formatNumber(totalExpense)}</b></td></tr>
-                            <tr><td style="padding: 4px;">Keuntungan Bersih (Laba)</td><td>: <b style="color: #d97706; font-size: 14px;">Rp ${window.formatNumber(netProfit)}</b></td></tr>
+                            <tr><td style="padding: 4px;">Total Saldo Kas Toko Saat Ini</td><td>: <b style="color: #16a34a; font-size: 14px;">Rp ${window.formatNumber(totalBalance)}</b></td></tr>
+                            <tr><td style="padding: 4px;">Total Pemasukan (Omset Filtered)</td><td>: <b>Rp ${window.formatNumber(totalIncome)}</b></td></tr>
+                            <tr><td style="padding: 4px;">Total Pengeluaran Toko (Filtered)</td><td>: <b style="color: #dc2626;">Rp ${window.formatNumber(totalExpense)}</b></td></tr>
+                            <tr><td style="padding: 4px;">Keuntungan Bersih (Laba Filtered)</td><td>: <b style="color: #d97706;">Rp ${window.formatNumber(netProfit)}</b></td></tr>
                         </table>
                     </div>
 
