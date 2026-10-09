@@ -231,7 +231,9 @@ body { font-family: 'Inter', sans-serif; }
           <!-- QR Code Display Panel (QR PANEL) -->
           <div id="panelPaymentQr" class="hidden bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-3">
             <div class="flex flex-col sm:flex-row items-center gap-4">
-              <div class="qris-card rounded-xl p-3 border border-slate-300 flex flex-col items-center justify-center max-w-[240px] w-full text-slate-900 shadow-md">
+              <!-- Interactive Clickable QRIS Card to Open Zoom Modal -->
+              <div onclick="openQrisZoomModal()" title="Klik untuk memperbesar QRIS" class="qris-card rounded-xl p-3 border border-slate-300 flex flex-col items-center justify-center max-w-[240px] w-full text-slate-900 shadow-md cursor-pointer hover:scale-105 transition-transform duration-200 group relative">
+                <div class="absolute inset-0 bg-slate-900/10 group-hover:bg-slate-900/0 rounded-xl transition-all"></div>
                 <div class="w-full flex justify-between items-center px-1 mb-1">
                   <div class="flex items-center space-x-1">
                     <span class="font-black text-rose-600 text-lg tracking-tighter">QRIS</span>
@@ -246,15 +248,16 @@ body { font-family: 'Inter', sans-serif; }
                   <p class="text-[10px] text-slate-600 font-mono font-medium" id="qrisNmidDisplay">NMID: ID1026551623055</p>
                   <p class="text-[9px] text-slate-500 font-mono">A01</p>
                 </div>
-                <div class="bg-white p-2 rounded-lg border border-slate-200 my-1 flex justify-center items-center min-w-[140px] min-h-[140px]">
+                <div class="bg-white p-2 rounded-lg border border-slate-200 my-1 flex justify-center items-center min-w-[140px] min-h-[140px] relative">
                   <img id="displayQrImage" src="" alt="QR Code QRIS" class="w-36 h-36 object-contain hidden">
                   <div id="qrisSvgContainer" class="w-36 h-36 flex items-center justify-center">
                     <!-- Rendered via JS -->
                   </div>
                 </div>
                 <div class="text-center mt-1">
-                  <p class="text-[9px] font-extrabold text-slate-800 tracking-wider">SATU QRIS UNTUK SEMUA</p>
-                  <p class="text-[8px] text-slate-500">Scan dengan BCA, Mandiri, GoPay, OVO, Dana, dll</p>
+                  <span class="text-[10px] font-bold text-brand-600 group-hover:underline flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-magnifying-glass-plus"></i> Klik Untuk Memperbesar
+                  </span>
                 </div>
               </div>
               <div class="space-y-2 text-center sm:text-left flex-1">
@@ -262,6 +265,12 @@ body { font-family: 'Inter', sans-serif; }
                   <i class="fa-solid fa-qrcode"></i> Scan QRIS Merchant
                 </div>
                 <p class="text-xs text-slate-300 leading-relaxed">Tunjukkan QRIS ini ke pelanggan. Bebas biaya transfer antar bank & e-wallet.</p>
+                
+                <button onclick="openQrisZoomModal()" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs rounded-lg shadow transition flex items-center gap-2 justify-center sm:justify-start">
+                  <i class="fa-solid fa-expand text-sm"></i>
+                  <span>Perbesar Tampilan QRIS</span>
+                </button>
+
                 <div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-700/80 text-xs text-amber-300">
                   <i class="fa-solid fa-info-circle mr-1"></i> Pembayaran QRIS otomatis dianggap <span class="font-bold underline">UANG PAS / LUNAS</span>.
                 </div>
@@ -323,14 +332,13 @@ body { font-family: 'Inter', sans-serif; }
 
   <!-- RIGHT COLUMN: Laporan Pemasukan, Pengeluaran & Export Word (5 cols on lg) -->
   <section class="lg:col-span-5 space-y-5">
-    <!-- Summary Stats Cards (Dashboard Stats + SALDO KAS TOKO) -->
+    <!-- Summary Stats Cards -->
     <div class="grid grid-cols-2 gap-3">
-      <!-- CARD SALDO KAS TOKO DENGAN FITUR HIDE / SHOW SALDO -->
+      <!-- CARD SALDO KAS TOKO -->
       <div class="bg-gradient-to-br from-blue-900 to-indigo-900 p-3.5 rounded-xl border border-blue-700 shadow-sm flex flex-col justify-between text-white col-span-2 relative overflow-hidden group">
         <div class="flex items-center justify-between">
           <span class="text-[11px] font-bold text-blue-200 uppercase tracking-wider">Total Saldo Toko saat ini</span>
           <div class="flex items-center space-x-2">
-            <!-- FITUR BUTTON HIDDEN NOMINAL SALDO -->
             <button onclick="toggleBalanceVisibility()" type="button" title="Sembunyikan / Tampilkan Nominal Saldo" class="text-blue-200 hover:text-white bg-blue-800/60 hover:bg-blue-800 p-1.5 rounded-lg border border-blue-600/50 transition flex items-center justify-center text-xs">
               <i id="btnToggleBalanceIcon" class="fa-solid fa-eye"></i>
             </button>
@@ -361,7 +369,6 @@ body { font-family: 'Inter', sans-serif; }
         <span class="text-[10px] text-slate-400 mt-0.5" id="statTodayExpCount">0 Pengeluaran</span>
       </div>
 
-      <!-- LABA BERSIH HIGHLIGHT CARD WITH QUICK RECAP LINK -->
       <div class="bg-gradient-to-br from-slate-900 to-slate-800 p-3.5 rounded-xl border border-slate-700 shadow-sm flex flex-col justify-between text-white col-span-2 sm:col-span-1">
         <div class="flex items-center justify-between">
           <span class="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Keuntungan Bersih Hari Ini</span>
@@ -392,14 +399,12 @@ body { font-family: 'Inter', sans-serif; }
           </h2>
           <p class="text-xs text-slate-500">Download file Word (.doc) Pemasukan & Pengeluaran</p>
         </div>
-        <!-- Filter Date -->
         <select id="filterTimeframe" onchange="renderHistoryTable()" class="text-xs border border-slate-300 rounded-md px-2 py-1.5 focus:ring-brand-500 bg-white font-medium">
           <option value="today">Hari Ini</option>
           <option value="all">Semua Riwayat</option>
         </select>
       </div>
 
-      <!-- Export Word Action Button -->
       <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl space-y-2">
         <p class="text-xs text-blue-800">
           <i class="fa-solid fa-circle-info mr-1"></i> File Word mencakup rincian Pemasukan, Pengeluaran, Saldo Kas, serta Rincian Laba Bersih.
@@ -409,13 +414,12 @@ body { font-family: 'Inter', sans-serif; }
         </button>
       </div>
 
-      <!-- History Table List & Tab Filter -->
+      <!-- History Table List -->
       <div>
         <div class="flex flex-wrap justify-between items-center mb-2 gap-2">
           <span class="text-xs font-bold text-slate-600 uppercase">Catatan Transaksi</span>
-          <!-- History View Filter Tabs -->
           <div class="inline-flex rounded-lg bg-slate-100 p-0.5 text-[11px] font-semibold border border-slate-200">
-            <button onclick="setHistoryFilterTab('all')" id="tabHistAll" class="px-2 py-0.5 rounded-md bg-white text-slate-800 shadow-xs">Semua</button>
+            <button onclick="setHistoryFilterTab('all')" id="tabHistAll" class="px-2 py-0.5 rounded-md bg-white text-slate-800 shadow-xs font-bold">Semua</button>
             <button onclick="setHistoryFilterTab('income')" id="tabHistIncome" class="px-2 py-0.5 rounded-md text-slate-500 hover:text-slate-800">Masuk</button>
             <button onclick="setHistoryFilterTab('expense')" id="tabHistExpense" class="px-2 py-0.5 rounded-md text-slate-500 hover:text-slate-800">Keluar</button>
           </div>
@@ -442,6 +446,61 @@ body { font-family: 'Inter', sans-serif; }
     </div>
   </section>
 </main>
+
+<!-- MODAL POPUP QRIS TERPERBESAR (ZOOM MODAL) -->
+<div id="qrisZoomModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden no-print" onclick="closeQrisZoomModal(event)">
+  <div class="bg-white rounded-3xl max-w-sm sm:max-w-md w-full p-5 sm:p-6 shadow-2xl relative border border-slate-200 transform transition-all text-slate-900 flex flex-col items-center" onclick="event.stopPropagation()">
+    <!-- Tombol Silang Tutup Modal -->
+    <button onclick="closeQrisZoomModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 w-9 h-9 rounded-full flex items-center justify-center transition focus:outline-none">
+      <i class="fa-solid fa-xmark text-lg"></i>
+    </button>
+
+    <div class="qris-card rounded-2xl p-4 sm:p-5 border border-slate-300 w-full flex flex-col items-center text-slate-900 shadow-xl bg-white mt-2">
+      <!-- QRIS Header Logos -->
+      <div class="w-full flex justify-between items-center px-1 mb-2">
+        <div class="flex items-center space-x-2">
+          <span class="font-black text-rose-600 text-2xl tracking-tighter">QRIS</span>
+          <span class="text-[9px] text-slate-500 leading-tight font-semibold border-l border-slate-300 pl-2 block">
+            QR Code Standar<br>Pembayaran Nasional
+          </span>
+        </div>
+        <div class="text-right">
+          <span class="font-black text-rose-600 text-sm tracking-wider">GPN</span>
+        </div>
+      </div>
+
+      <!-- Merchant Info -->
+      <div class="text-center my-2">
+        <h3 class="font-extrabold text-slate-900 text-xl sm:text-2xl leading-tight" id="zoomQrisMerchant">Qooi luqman</h3>
+        <p class="text-xs text-slate-600 font-mono font-medium mt-0.5" id="zoomQrisNmid">NMID: ID1026551623055</p>
+        <p class="text-[10px] text-slate-500 font-mono">A01</p>
+      </div>
+
+      <!-- Main QR Code Image Area -->
+      <div class="bg-white p-3 rounded-2xl border-2 border-slate-200 my-2 flex justify-center items-center w-64 h-64 sm:w-72 sm:h-72 shadow-inner">
+        <img id="zoomQrImage" src="" alt="QR Code QRIS Besar" class="w-full h-full object-contain hidden">
+        <div id="zoomQrisSvgContainer" class="w-full h-full flex items-center justify-center">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+
+      <!-- Nominal Tagihan Info -->
+      <div class="mt-2 text-center bg-amber-50 border border-amber-200 px-4 py-1.5 rounded-full shadow-xs">
+        <span class="text-xs text-slate-600 font-semibold">Total Tagihan: </span>
+        <span class="text-base sm:text-lg font-black text-amber-600" id="zoomQrisTotalTagihan">Rp 0</span>
+      </div>
+
+      <div class="text-center mt-3">
+        <p class="text-[11px] font-extrabold text-slate-800 tracking-wider">SATU QRIS UNTUK SEMUA</p>
+        <p class="text-[10px] text-slate-500 mt-0.5">Scan dengan BCA, Mandiri, GoPay, OVO, DANA, ShopeePay, dll</p>
+      </div>
+    </div>
+
+    <button onclick="closeQrisZoomModal()" class="mt-4 w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-xs transition shadow-md flex items-center justify-center gap-2">
+      <i class="fa-solid fa-check"></i> Selesai / Tutup Modal
+    </button>
+  </div>
+</div>
 
 <!-- MODAL REKAP PENGHASILAN & KEUNTUNGAN HARIAN DAN BULANAN -->
 <div id="recapModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 hidden no-print">
@@ -816,7 +875,7 @@ try {
   console.warn("Firebase Init warning:", e);
 }
 
-// Global Application State & Hide Balance Feature State
+// Global Application State
 window.isBalanceHidden = localStorage.getItem('hideBalance') === 'true';
 
 window.settings = {
@@ -880,6 +939,54 @@ window.showToast = function(msg, type = 'info') {
 window.formatNumber = function(num) {
   return new Intl.NumberFormat('id-ID').format(num || 0);
 };
+
+// FITUR POPUP MODAL QRIS TERPERBESAR (ZOOM)
+window.openQrisZoomModal = function() {
+  const modal = document.getElementById('qrisZoomModal');
+  const merchantEl = document.getElementById('zoomQrisMerchant');
+  const nmidEl = document.getElementById('zoomQrisNmid');
+  const tagihanEl = document.getElementById('zoomQrisTotalTagihan');
+  const zoomQrImg = document.getElementById('zoomQrImage');
+  const zoomSvgContainer = document.getElementById('zoomQrisSvgContainer');
+
+  if (merchantEl) merchantEl.innerText = window.settings.qrisMerchant || "Qooi luqman";
+  if (nmidEl) nmidEl.innerText = "NMID: " + (window.settings.qrisNmid || "ID1026551623055");
+
+  const total = window.cart.reduce((sum, i) => sum + i.subtotal, 0);
+  if (tagihanEl) tagihanEl.innerText = `Rp ${window.formatNumber(total)}`;
+
+  // Gunakan Foto QRIS yang diunggah jika ada
+  if (window.settings.qrImage) {
+    zoomQrImg.src = window.settings.qrImage;
+    zoomQrImg.classList.remove('hidden');
+    zoomSvgContainer.classList.add('hidden');
+  } else {
+    zoomQrImg.src = "";
+    zoomQrImg.classList.add('hidden');
+    zoomSvgContainer.classList.remove('hidden');
+    zoomSvgContainer.innerHTML = document.getElementById('qrisSvgContainer').innerHTML;
+  }
+
+  modal.classList.remove('hidden');
+};
+
+window.closeQrisZoomModal = function(event) {
+  if (event && event.target && event.target.id !== 'qrisZoomModal' && !event.target.closest('button')) {
+    return;
+  }
+  const modal = document.getElementById('qrisZoomModal');
+  if (modal) modal.classList.add('hidden');
+};
+
+// Event listener tombol ESC untuk menutup modal
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    window.closeQrisZoomModal();
+    window.closeRecapModal();
+    window.closeSettingsModal();
+    window.closeReceiptModal();
+  }
+});
 
 // FITUR TOGGLE NOMINAL SALDO TERSEMBUNYI
 window.toggleBalanceVisibility = function() {
@@ -1113,6 +1220,7 @@ window.handleQrUpload = function(event) {
   reader.onload = function(e) {
     window.settings.qrImage = e.target.result;
     window.updateSettingQrPreview();
+    window.updateQrDisplay();
     window.showToast('Foto QR Custom berhasil diupload', 'success');
   };
   reader.readAsDataURL(file);
@@ -1130,6 +1238,7 @@ window.updateSettingQrPreview = function() {
   } else {
     imgPreview.src = "";
     imgPreview.classList.add('hidden');
+    iconPlaceholder.cursor = 'default';
     iconPlaceholder.classList.remove('hidden');
     btnRemove.classList.add('hidden');
   }
@@ -1674,6 +1783,96 @@ window.confirmClearHistory = function() {
   });
 };
 
+// CONFIRM MODAL HELPER
+window.showConfirmModal = function(title, msg, onConfirm) {
+  const modal = document.getElementById('confirmModal');
+  document.getElementById('confirmTitle').innerText = title;
+  document.getElementById('confirmMessage').innerText = msg;
+  modal.classList.remove('hidden');
+
+  const btnOk = document.getElementById('confirmBtnOk');
+  const btnCancel = document.getElementById('confirmBtnCancel');
+
+  const cleanup = () => {
+    modal.classList.add('hidden');
+    btnOk.onclick = null;
+    btnCancel.onclick = null;
+  };
+
+  btnOk.onclick = () => {
+    cleanup();
+    if (onConfirm) onConfirm();
+  };
+  btnCancel.onclick = cleanup;
+};
+
+// RECEIPT MODAL
+window.openReceiptModal = function(tx) {
+  const modal = document.getElementById('receiptModal');
+  const content = document.getElementById('receiptContent');
+  const dateObj = new Date(tx.timestamp);
+  const timeStr = dateObj.toLocaleString('id-ID');
+
+  let itemsHtml = '';
+  (tx.items || []).forEach(item => {
+    itemsHtml += `
+      <div class="flex justify-between py-1 border-b border-dashed border-slate-300">
+        <div>
+          <div class="font-bold">${item.name}</div>
+          <div class="text-[10px] text-slate-500">${item.qty} x Rp ${window.formatNumber(item.price)}</div>
+        </div>
+        <div class="font-bold text-right">Rp ${window.formatNumber(item.subtotal)}</div>
+      </div>
+    `;
+  });
+
+  content.innerHTML = `
+    <div class="text-center space-y-1 pb-2 border-b border-slate-300">
+      <h3 class="font-extrabold text-sm uppercase">${window.settings.shopName}</h3>
+      <p class="text-[10px] text-slate-500">${window.settings.shopAddress}</p>
+      <p class="text-[9px] text-slate-400 mt-1">${timeStr} | ID: ${tx.id}</p>
+    </div>
+
+    <div class="py-2 space-y-1">
+      ${itemsHtml}
+    </div>
+
+    <div class="pt-2 border-t border-slate-300 space-y-1 text-xs">
+      <div class="flex justify-between font-bold text-sm">
+        <span>TOTAL:</span>
+        <span class="text-emerald-700">Rp ${window.formatNumber(tx.totalAmount)}</span>
+      </div>
+      <div class="flex justify-between text-[11px] text-slate-600">
+        <span>Metode:</span>
+        <span class="font-semibold">${tx.paymentMethod}</span>
+      </div>
+      <div class="flex justify-between text-[11px] text-slate-600">
+        <span>Bayar:</span>
+        <span>Rp ${window.formatNumber(tx.cashPaid)}</span>
+      </div>
+      <div class="flex justify-between text-[11px] text-slate-600">
+        <span>Kembalian:</span>
+        <span>Rp ${window.formatNumber(tx.change)}</span>
+      </div>
+    </div>
+
+    <div class="text-center pt-3 border-t border-dashed border-slate-300 text-[10px] text-slate-500 italic">
+      *** Terima Kasih Atas Kunjungan Anda ***
+    </div>
+  `;
+
+  modal.classList.remove('hidden');
+};
+
+window.closeReceiptModal = function() {
+  document.getElementById('receiptModal').classList.add('hidden');
+};
+
+window.printReceipt = function() {
+  window.print();
+};
+
+// REKAP MODAL FUNCTIONS
 window.openRecapModal = function(mode = 'daily') {
   window.currentRecapMode = mode;
   window.currentRecapDate = new Date().toISOString().slice(0, 10);
@@ -1709,6 +1908,36 @@ window.switchRecapTab = function(mode) {
   window.renderRecapData();
 };
 
+window.onRecapDateChange = function() {
+  window.currentRecapDate = document.getElementById('recapDatePicker').value;
+  window.renderRecapData();
+};
+
+window.setRecapQuickDate = function(type) {
+  const d = new Date();
+  if (type === 'yesterday') {
+    d.setDate(d.getDate() - 1);
+  }
+  window.currentRecapDate = d.toISOString().slice(0, 10);
+  document.getElementById('recapDatePicker').value = window.currentRecapDate;
+  window.renderRecapData();
+};
+
+window.onRecapMonthChange = function() {
+  window.currentRecapMonth = document.getElementById('recapMonthPicker').value;
+  window.renderRecapData();
+};
+
+window.setRecapQuickMonth = function(type) {
+  const d = new Date();
+  if (type === 'last') {
+    d.setMonth(d.getMonth() - 1);
+  }
+  window.currentRecapMonth = d.toISOString().slice(0, 7);
+  document.getElementById('recapMonthPicker').value = window.currentRecapMonth;
+  window.renderRecapData();
+};
+
 window.renderRecapData = function() {
   if (window.currentRecapMode === 'daily') {
     window.renderDailyRecap();
@@ -1717,413 +1946,231 @@ window.renderRecapData = function() {
   }
 };
 
-window.onRecapDateChange = function() {
-  const inputVal = document.getElementById('recapDatePicker').value;
-  if (inputVal) {
-    window.currentRecapDate = inputVal;
-    window.renderDailyRecap();
-  }
-};
-
-window.setRecapQuickDate = function(type) {
-  const today = new Date();
-  if (type === 'yesterday') {
-    today.setDate(today.getDate() - 1);
-  }
-  const str = today.toISOString().slice(0, 10);
-  window.currentRecapDate = str;
-  document.getElementById('recapDatePicker').value = str;
-  window.renderDailyRecap();
-};
-
 window.renderDailyRecap = function() {
   const dateStr = window.currentRecapDate;
-  const dateTxs = window.transactions.filter(t => t.timestamp && t.timestamp.startsWith(dateStr));
+  const filtered = window.transactions.filter(t => t.timestamp && t.timestamp.startsWith(dateStr));
 
-  const incomeTxs = dateTxs.filter(t => t.type !== 'EXPENSE');
-  const expenseTxs = dateTxs.filter(t => t.type === 'EXPENSE');
+  const incomeTxs = filtered.filter(t => t.type !== 'EXPENSE');
+  const expenseTxs = filtered.filter(t => t.type === 'EXPENSE');
 
-  const totalIncome = incomeTxs.reduce((s, t) => s + (t.totalAmount || 0), 0);
-  const totalExpense = expenseTxs.reduce((s, t) => s + (t.totalAmount || 0), 0);
+  const totalIncome = incomeTxs.reduce((sum, t) => sum + (t.totalAmount || 0), 0);
+  const totalExpense = expenseTxs.reduce((sum, t) => sum + (t.totalAmount || 0), 0);
   const netProfit = totalIncome - totalExpense;
-  const totalSheets = incomeTxs.reduce((s, t) => s + (t.totalSheets || 0), 0);
+  const totalSheets = incomeTxs.reduce((sum, t) => sum + (t.totalSheets || 0), 0);
 
-  const tunaiIncome = incomeTxs.filter(t => t.paymentMethod === 'Tunai').reduce((s, t) => s + (t.totalAmount || 0), 0);
-  const qrisIncome = incomeTxs.filter(t => t.paymentMethod === 'QRIS').reduce((s, t) => s + (t.totalAmount || 0), 0);
+  const tunaiIncome = incomeTxs.filter(t => t.paymentMethod !== 'QRIS').reduce((sum, t) => sum + (t.totalAmount || 0), 0);
+  const qrisIncome = incomeTxs.filter(t => t.paymentMethod === 'QRIS').reduce((sum, t) => sum + (t.totalAmount || 0), 0);
 
-  // Overall Cumulative Balance Calculation
-  const allInc = window.transactions.filter(t => t.type !== 'EXPENSE').reduce((s, t) => s + (t.totalAmount || 0), 0);
-  const allExp = window.transactions.filter(t => t.type === 'EXPENSE').reduce((s, t) => s + (t.totalAmount || 0), 0);
-  const cumBal = allInc - allExp;
+  // Cumulative
+  const allIncome = window.transactions.filter(t => t.type !== 'EXPENSE').reduce((sum, t) => sum + (t.totalAmount || 0), 0);
+  const allExpense = window.transactions.filter(t => t.type === 'EXPENSE').reduce((sum, t) => sum + (t.totalAmount || 0), 0);
+  const cumBalance = allIncome - allExpense;
 
-  document.getElementById('recapCumulativeBalance').innerText = `Rp ${window.formatNumber(cumBal)}`;
-  document.getElementById('recapTotalAllIncome').innerText = `Rp ${window.formatNumber(allInc)}`;
-  document.getElementById('recapTotalAllExpense').innerText = `Rp ${window.formatNumber(allExp)}`;
+  document.getElementById('recapCumulativeBalance').innerText = `Rp ${window.formatNumber(cumBalance)}`;
+  document.getElementById('recapTotalAllIncome').innerText = `Rp ${window.formatNumber(allIncome)}`;
+  document.getElementById('recapTotalAllExpense').innerText = `Rp ${window.formatNumber(allExpense)}`;
 
   document.getElementById('recapTotalIncome').innerText = `Rp ${window.formatNumber(totalIncome)}`;
   document.getElementById('recapIncomeBreakdown').innerText = `Tunai: Rp ${window.formatNumber(tunaiIncome)} | QRIS: Rp ${window.formatNumber(qrisIncome)}`;
-
   document.getElementById('recapTotalExpense').innerText = `Rp ${window.formatNumber(totalExpense)}`;
-  document.getElementById('recapExpenseCount').innerText = `${expenseTxs.length} Transaksi Pengeluaran`;
-
+  document.getElementById('recapExpenseCount').innerText = `${expenseTxs.length} Catatan Pengeluaran`;
   document.getElementById('recapNetProfit').innerText = `${netProfit < 0 ? '-' : ''}Rp ${window.formatNumber(Math.abs(netProfit))}`;
   document.getElementById('recapTotalSheets').innerText = `${window.formatNumber(totalSheets)} Lembar`;
   document.getElementById('recapIncomeTxCount').innerText = `${incomeTxs.length} Transaksi Penjualan`;
 
-  document.getElementById('recapFooterPeriodDisplay').innerText = `Periode Harian: ${dateStr}`;
-
-  // Top Items for selected date
-  const itemMap = {};
+  // Top Items
+  const topContainer = document.getElementById('recapTopItemsContainer');
+  topContainer.innerHTML = '';
+  const itemCounts = {};
   incomeTxs.forEach(t => {
     (t.items || []).forEach(i => {
-      itemMap[i.name] = (itemMap[i.name] || 0) + i.qty;
+      itemCounts[i.name] = (itemCounts[i.name] || 0) + i.qty;
     });
   });
-  const topItemsContainer = document.getElementById('recapTopItemsContainer');
-  topItemsContainer.innerHTML = '';
-  const sortedItems = Object.entries(itemMap).sort((a, b) => b[1] - a[1]);
+
+  const sortedItems = Object.entries(itemCounts).sort((a, b) => b[1] - a[1]);
   if (sortedItems.length === 0) {
-    topItemsContainer.innerHTML = `<span class="text-slate-400 italic">Belum ada transaksi penjualan pada tanggal ini.</span>`;
+    topContainer.innerHTML = `<span class="text-slate-400 italic">Belum ada data penjualan tanggal ini.</span>`;
   } else {
-    sortedItems.slice(0, 5).forEach(([name, qty]) => {
-      const badge = document.createElement('span');
-      badge.className = "px-2.5 py-1 bg-white border border-slate-200 rounded-lg text-slate-700 font-semibold shadow-xs flex items-center gap-1.5";
-      badge.innerHTML = `<span>${name}</span> <span class="bg-brand-100 text-brand-700 px-1.5 py-0.5 rounded text-[10px] font-bold">${qty} lbr</span>`;
-      topItemsContainer.appendChild(badge);
+    sortedItems.slice(0, 5).forEach(([name, count]) => {
+      topContainer.innerHTML += `
+        <span class="px-2.5 py-1 bg-white border border-slate-200 rounded-lg shadow-xs font-semibold text-slate-700">
+          ${name}: <strong class="text-brand-600">${count}</strong> lbr
+        </span>
+      `;
     });
   }
 
-  // Multi-day Summary Table
-  const dayGroups = {};
+  // Multi Day Table Breakdown
+  const multiTable = document.getElementById('recapMultiDayTableBody');
+  multiTable.innerHTML = '';
+  const groups = {};
   window.transactions.forEach(t => {
-    const d = t.timestamp ? t.timestamp.slice(0, 10) : 'Unknown';
-    if (!dayGroups[d]) dayGroups[d] = { income: 0, expense: 0, sheets: 0, count: 0 };
+    const day = t.timestamp ? t.timestamp.slice(0, 10) : 'Unknown';
+    if (!groups[day]) groups[day] = { income: 0, expense: 0, sheets: 0 };
     if (t.type === 'EXPENSE') {
-      dayGroups[d].expense += (t.totalAmount || 0);
+      groups[day].expense += (t.totalAmount || 0);
     } else {
-      dayGroups[d].income += (t.totalAmount || 0);
-      dayGroups[d].sheets += (t.totalSheets || 0);
+      groups[day].income += (t.totalAmount || 0);
+      groups[day].sheets += (t.totalSheets || 0);
     }
-    dayGroups[d].count++;
   });
 
-  const tbody = document.getElementById('recapMultiDayTableBody');
-  tbody.innerHTML = '';
-  const sortedDates = Object.keys(dayGroups).sort().reverse();
-
-  if (sortedDates.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Belum ada data transaksi sama sekali.</td></tr>`;
-    return;
-  }
-
-  sortedDates.forEach(d => {
-    const data = dayGroups[d];
-    const profit = data.income - data.expense;
+  Object.keys(groups).sort().reverse().slice(0, 10).forEach(dayKey => {
+    const g = groups[dayKey];
+    const profit = g.income - g.expense;
     const tr = document.createElement('tr');
-    tr.className = `hover:bg-slate-50 transition border-b border-slate-100 cursor-pointer ${d === dateStr ? 'bg-emerald-50/60 font-semibold' : ''}`;
+    tr.className = `hover:bg-slate-50 transition cursor-pointer ${dayKey === dateStr ? 'bg-emerald-50/60 font-bold' : ''}`;
     tr.onclick = () => {
-      window.currentRecapDate = d;
-      document.getElementById('recapDatePicker').value = d;
-      window.renderDailyRecap();
+      document.getElementById('recapDatePicker').value = dayKey;
+      window.onRecapDateChange();
     };
     tr.innerHTML = `
-      <td class="p-2.5 font-bold text-slate-800">${d} ${d === dateStr ? '<span class="text-[9px] bg-emerald-600 text-white px-1.5 py-0.5 rounded ml-1">Terpilih</span>' : ''}</td>
-      <td class="p-2.5 text-right font-bold text-emerald-600">Rp ${window.formatNumber(data.income)}</td>
-      <td class="p-2.5 text-right font-bold text-rose-600">Rp ${window.formatNumber(data.expense)}</td>
-      <td class="p-2.5 text-right font-bold ${profit >= 0 ? 'text-amber-600' : 'text-rose-600'}">Rp ${window.formatNumber(profit)}</td>
-      <td class="p-2.5 text-center text-slate-600">${window.formatNumber(data.sheets)} lbr</td>
-      <td class="p-2.5 text-center">
-        <button class="text-brand-600 hover:underline font-bold text-[11px]">Lihat</button>
-      </td>
+      <td class="p-2.5 font-semibold text-slate-800">${dayKey}</td>
+      <td class="p-2.5 text-right text-emerald-600 font-bold">Rp ${window.formatNumber(g.income)}</td>
+      <td class="p-2.5 text-right text-rose-600 font-bold">Rp ${window.formatNumber(g.expense)}</td>
+      <td class="p-2.5 text-right font-black ${profit >= 0 ? 'text-amber-600' : 'text-rose-600'}">Rp ${window.formatNumber(profit)}</td>
+      <td class="p-2.5 text-center text-slate-600">${window.formatNumber(g.sheets)} lbr</td>
+      <td class="p-2.5 text-center"><button class="text-emerald-600 hover:underline text-[10px]">Pilih &rarr;</button></td>
     `;
-    tbody.appendChild(tr);
+    multiTable.appendChild(tr);
   });
-};
 
-window.onRecapMonthChange = function() {
-  const val = document.getElementById('recapMonthPicker').value;
-  if (val) {
-    window.currentRecapMonth = val;
-    window.renderMonthlyRecap();
-  }
-};
-
-window.setRecapQuickMonth = function(type) {
-  const d = new Date();
-  if (type === 'last') {
-    d.setMonth(d.getMonth() - 1);
-  }
-  const mStr = d.toISOString().slice(0, 7);
-  window.currentRecapMonth = mStr;
-  document.getElementById('recapMonthPicker').value = mStr;
-  window.renderMonthlyRecap();
+  document.getElementById('recapFooterPeriodDisplay').innerText = `Tanggal Terpilih: ${dateStr}`;
 };
 
 window.renderMonthlyRecap = function() {
   const monthStr = window.currentRecapMonth;
-  const monthTxs = window.transactions.filter(t => t.timestamp && t.timestamp.startsWith(monthStr));
+  const filtered = window.transactions.filter(t => t.timestamp && t.timestamp.startsWith(monthStr));
 
-  const incTxs = monthTxs.filter(t => t.type !== 'EXPENSE');
-  const expTxs = monthTxs.filter(t => t.type === 'EXPENSE');
+  const incomeTxs = filtered.filter(t => t.type !== 'EXPENSE');
+  const expenseTxs = filtered.filter(t => t.type === 'EXPENSE');
 
-  const totalInc = incTxs.reduce((s, t) => s + (t.totalAmount || 0), 0);
-  const totalExp = expTxs.reduce((s, t) => s + (t.totalAmount || 0), 0);
-  const netProfit = totalInc - totalExp;
-  const totalSheets = incTxs.reduce((s, t) => s + (t.totalSheets || 0), 0);
+  const totalIncome = incomeTxs.reduce((sum, t) => sum + (t.totalAmount || 0), 0);
+  const totalExpense = expenseTxs.reduce((sum, t) => sum + (t.totalAmount || 0), 0);
+  const netProfit = totalIncome - totalExpense;
+  const totalSheets = incomeTxs.reduce((sum, t) => sum + (t.totalSheets || 0), 0);
 
-  const activeDays = new Set(monthTxs.map(t => t.timestamp.slice(0, 10))).size;
-  const avgProfit = activeDays > 0 ? Math.round(netProfit / activeDays) : 0;
+  const activeDaysSet = new Set(filtered.map(t => t.timestamp.slice(0, 10)));
+  const activeDays = activeDaysSet.size;
 
-  document.getElementById('mRecapMonthlyBalance').innerText = `Rp ${window.formatNumber(totalInc - totalExp)}`;
-  document.getElementById('mRecapMonthlyIncomeText').innerText = `Rp ${window.formatNumber(totalInc)}`;
-  document.getElementById('mRecapMonthlyExpenseText').innerText = `Rp ${window.formatNumber(totalExp)}`;
+  document.getElementById('mRecapMonthlyBalance').innerText = `Rp ${window.formatNumber(netProfit)}`;
+  document.getElementById('mRecapMonthlyIncomeText').innerText = `Rp ${window.formatNumber(totalIncome)}`;
+  document.getElementById('mRecapMonthlyExpenseText').innerText = `Rp ${window.formatNumber(totalExpense)}`;
 
-  document.getElementById('mRecapTotalIncome').innerText = `Rp ${window.formatNumber(totalInc)}`;
-  document.getElementById('mRecapIncomeCount').innerText = `${incTxs.length} Transaksi Penjualan`;
-
-  document.getElementById('mRecapTotalExpense').innerText = `Rp ${window.formatNumber(totalExp)}`;
-  document.getElementById('mRecapExpenseCount').innerText = `${expTxs.length} Catatan Pengeluaran`;
-
+  document.getElementById('mRecapTotalIncome').innerText = `Rp ${window.formatNumber(totalIncome)}`;
+  document.getElementById('mRecapIncomeCount').innerText = `${incomeTxs.length} Transaksi Penjualan`;
+  document.getElementById('mRecapTotalExpense').innerText = `Rp ${window.formatNumber(totalExpense)}`;
+  document.getElementById('mRecapExpenseCount').innerText = `${expenseTxs.length} Catatan Pengeluaran`;
   document.getElementById('mRecapNetProfit').innerText = `${netProfit < 0 ? '-' : ''}Rp ${window.formatNumber(Math.abs(netProfit))}`;
-  document.getElementById('mRecapAvgDailyProfit').innerText = `Rata-rata: Rp ${window.formatNumber(avgProfit)}/hari`;
-
+  document.getElementById('mRecapAvgDailyProfit').innerText = `Rata-rata: Rp ${window.formatNumber(activeDays > 0 ? Math.round(netProfit / activeDays) : 0)}/hari`;
   document.getElementById('mRecapTotalSheets').innerText = `${window.formatNumber(totalSheets)} Lembar`;
   document.getElementById('mRecapActiveDays').innerText = `${activeDays} Hari Transaksi Aktif`;
 
-  document.getElementById('recapFooterPeriodDisplay').innerText = `Periode Bulanan: ${monthStr}`;
-
-  // Expense Categories breakdown
-  const catMap = {};
-  expTxs.forEach(t => {
-    const c = t.category || 'Lain-lain';
-    catMap[c] = (catMap[c] || 0) + (t.totalAmount || 0);
-  });
-
+  // Expense Categories Breakdown
   const catContainer = document.getElementById('mRecapExpenseCategoriesContainer');
   catContainer.innerHTML = '';
-  const sortedCats = Object.entries(catMap).sort((a, b) => b[1] - a[1]);
-  if (sortedCats.length === 0) {
-    catContainer.innerHTML = `<span class="text-slate-400 italic">Belum ada pengeluaran di bulan ini.</span>`;
+  const catTotals = {};
+  expenseTxs.forEach(t => {
+    const c = t.category || 'Lain-lain';
+    catTotals[c] = (catTotals[c] || 0) + (t.totalAmount || 0);
+  });
+
+  if (Object.keys(catTotals).length === 0) {
+    catContainer.innerHTML = `<span class="text-slate-400 italic">Belum ada pengeluaran bulan ini.</span>`;
   } else {
-    sortedCats.forEach(([cat, val]) => {
-      const pct = totalExp > 0 ? Math.round((val / totalExp) * 100) : 0;
-      const div = document.createElement('div');
-      div.className = "bg-white p-2 border border-slate-200 rounded-lg space-y-1";
-      div.innerHTML = `
-        <div class="flex justify-between font-bold text-slate-700">
-          <span>${cat}</span>
-          <span class="text-rose-600">Rp ${window.formatNumber(val)} (${pct}%)</span>
-        </div>
-        <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
-          <div class="bg-rose-500 h-full rounded-full" style="width: ${pct}%"></div>
+    Object.entries(catTotals).forEach(([cat, val]) => {
+      const pct = totalExpense > 0 ? Math.round((val / totalExpense) * 100) : 0;
+      catContainer.innerHTML += `
+        <div class="flex justify-between items-center text-xs p-1.5 bg-white border border-slate-200 rounded-md">
+          <span class="font-bold text-slate-700">${cat}</span>
+          <div class="space-x-2">
+            <span class="font-bold text-rose-600">Rp ${window.formatNumber(val)}</span>
+            <span class="text-[10px] bg-rose-100 text-rose-800 px-1.5 py-0.5 rounded-full font-bold">${pct}%</span>
+          </div>
         </div>
       `;
-      catContainer.appendChild(div);
     });
   }
 
   // Top Products Month
-  const prodMap = {};
-  incTxs.forEach(t => {
-    (t.items || []).forEach(i => {
-      prodMap[i.name] = (prodMap[i.name] || 0) + i.qty;
-    });
-  });
-
   const prodContainer = document.getElementById('mRecapTopProductsContainer');
   prodContainer.innerHTML = '';
-  const sortedProds = Object.entries(prodMap).sort((a, b) => b[1] - a[1]);
+  const prodTotals = {};
+  incomeTxs.forEach(t => {
+    (t.items || []).forEach(i => {
+      prodTotals[i.name] = (prodTotals[i.name] || 0) + i.qty;
+    });
+  });
+
+  const sortedProds = Object.entries(prodTotals).sort((a, b) => b[1] - a[1]);
   if (sortedProds.length === 0) {
-    prodContainer.innerHTML = `<span class="text-slate-400 italic">Belum ada penjualan di bulan ini.</span>`;
+    prodContainer.innerHTML = `<span class="text-slate-400 italic">Belum ada transaksi bulan ini.</span>`;
   } else {
-    sortedProds.slice(0, 5).forEach(([name, qty], idx) => {
-      const div = document.createElement('div');
-      div.className = "flex justify-between items-center bg-white p-2 border border-slate-200 rounded-lg";
-      div.innerHTML = `
-        <span class="font-bold text-slate-700">#${idx + 1} ${name}</span>
-        <span class="bg-brand-50 text-brand-700 font-bold px-2 py-0.5 rounded border border-brand-100">${window.formatNumber(qty)} lembar</span>
+    sortedProds.slice(0, 5).forEach(([pName, qty]) => {
+      prodContainer.innerHTML += `
+        <div class="flex justify-between items-center text-xs p-1.5 bg-white border border-slate-200 rounded-md">
+          <span class="font-bold text-slate-700 truncate max-w-[180px]">${pName}</span>
+          <span class="font-bold text-brand-600">${window.formatNumber(qty)} lembar</span>
+        </div>
       `;
-      prodContainer.appendChild(div);
     });
   }
 
-  // Daily breakdown within month
-  const mDayMap = {};
-  monthTxs.forEach(t => {
-    const d = t.timestamp ? t.timestamp.slice(0, 10) : 'Unknown';
-    if (!mDayMap[d]) mDayMap[d] = { inc: 0, exp: 0, count: 0 };
+  // Monthly Breakdown Table
+  const breakTable = document.getElementById('mRecapDailyBreakdownTableBody');
+  breakTable.innerHTML = '';
+  const daysInMonth = {};
+  filtered.forEach(t => {
+    const day = t.timestamp ? t.timestamp.slice(0, 10) : 'Unknown';
+    if (!daysInMonth[day]) daysInMonth[day] = { income: 0, expense: 0, txCount: 0 };
+    daysInMonth[day].txCount++;
     if (t.type === 'EXPENSE') {
-      mDayMap[d].exp += (t.totalAmount || 0);
+      daysInMonth[day].expense += (t.totalAmount || 0);
     } else {
-      mDayMap[d].inc += (t.totalAmount || 0);
+      daysInMonth[day].income += (t.totalAmount || 0);
     }
-    mDayMap[d].count++;
   });
 
-  const mTableBody = document.getElementById('mRecapDailyBreakdownTableBody');
-  mTableBody.innerHTML = '';
-  const mDates = Object.keys(mDayMap).sort().reverse();
-
-  if (mDates.length === 0) {
-    mTableBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Tidak ada transaksi di bulan ini.</td></tr>`;
-    return;
-  }
-
-  mDates.forEach(d => {
-    const data = mDayMap[d];
-    const profit = data.inc - data.exp;
+  Object.keys(daysInMonth).sort().forEach(dayKey => {
+    const d = daysInMonth[dayKey];
+    const prof = d.income - d.expense;
     const tr = document.createElement('tr');
     tr.className = 'hover:bg-slate-50 transition border-b border-slate-100';
     tr.innerHTML = `
-      <td class="p-2.5 font-bold text-slate-800">${d}</td>
-      <td class="p-2.5 text-right font-bold text-emerald-600">Rp ${window.formatNumber(data.inc)}</td>
-      <td class="p-2.5 text-right font-bold text-rose-600">Rp ${window.formatNumber(data.exp)}</td>
-      <td class="p-2.5 text-right font-bold ${profit >= 0 ? 'text-amber-600' : 'text-rose-600'}">Rp ${window.formatNumber(profit)}</td>
-      <td class="p-2.5 text-center font-medium">${data.count} trx</td>
+      <td class="p-2.5 font-semibold text-slate-800">${dayKey}</td>
+      <td class="p-2.5 text-right text-emerald-600 font-bold">Rp ${window.formatNumber(d.income)}</td>
+      <td class="p-2.5 text-right text-rose-600 font-bold">Rp ${window.formatNumber(d.expense)}</td>
+      <td class="p-2.5 text-right font-black ${prof >= 0 ? 'text-amber-600' : 'text-rose-600'}">Rp ${window.formatNumber(prof)}</td>
+      <td class="p-2.5 text-center text-slate-600">${d.txCount} Trx</td>
       <td class="p-2.5 text-center">
-        <button onclick="openRecapModal('daily'); window.currentRecapDate='${d}'; document.getElementById('recapDatePicker').value='${d}'; window.renderDailyRecap();" class="text-brand-600 hover:underline font-bold text-[11px]">Buka Harian</button>
+        <button onclick="document.getElementById('recapDatePicker').value='${dayKey}'; switchRecapTab('daily');" class="text-emerald-600 hover:underline text-[10px]">Detail &rarr;</button>
       </td>
     `;
-    mTableBody.appendChild(tr);
-  });
-};
-
-window.exportToWordDocument = function() {
-  const timeframe = document.getElementById('filterTimeframe') ? document.getElementById('filterTimeframe').value : 'today';
-  const filteredTxs = window.getFilteredTransactions(timeframe);
-
-  const incTxs = filteredTxs.filter(t => t.type !== 'EXPENSE');
-  const expTxs = filteredTxs.filter(t => t.type === 'EXPENSE');
-
-  const totalIncome = incTxs.reduce((s, t) => s + (t.totalAmount || 0), 0);
-  const totalExpense = expTxs.reduce((s, t) => s + (t.totalAmount || 0), 0);
-  const netProfit = totalIncome - totalExpense;
-  const totalSheets = incTxs.reduce((s, t) => s + (t.totalSheets || 0), 0);
-
-  const nowStr = new Date().toLocaleString('id-ID');
-
-  let htmlContent = `
-  <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-  <head>
-    <meta charset='utf-8'>
-    <title>Laporan Keuangan ${window.settings.shopName}</title>
-    <style>
-      body { font-family: 'Segoe UI', Arial, sans-serif; margin: 20px; color: #1e293b; }
-      h1 { color: #0284c7; text-align: center; margin-bottom: 2px; }
-      p.sub { text-align: center; color: #64748b; font-size: 12px; margin-top: 0; }
-      .summary-box { background: #f8fafc; border: 1px solid #cbd5e1; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
-      table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; }
-      th, td { border: 1px solid #94a3b8; padding: 8px; text-align: left; }
-      th { background-color: #0284c7; color: white; }
-      .text-right { text-align: right; }
-      .text-center { text-align: center; }
-      .income-row { background-color: #f0fdf4; }
-      .expense-row { background-color: #fff1f2; }
-      .badge-in { color: #16a34a; font-weight: bold; }
-      .badge-out { color: #e11d48; font-weight: bold; }
-    </style>
-  </head>
-  <body>
-    <h1>${window.settings.shopName}</h1>
-    <p class="sub">${window.settings.shopAddress}<br>Dicetak pada: ${nowStr} | Filter: ${timeframe === 'today' ? 'Hari Ini' : 'Semua Riwayat'}</p>
-    
-    <div class="summary-box">
-      <h3>RINGKASAN KEUTAMAAN LAPORAN</h3>
-      <table>
-        <tr>
-          <td><strong>Total Pemasukan (Omset)</strong></td>
-          <td class="text-right badge-in">Rp ${window.formatNumber(totalIncome)}</td>
-        </tr>
-        <tr>
-          <td><strong>Total Pengeluaran Toko</strong></td>
-          <td class="text-right badge-out">Rp ${window.formatNumber(totalExpense)}</td>
-        </tr>
-        <tr>
-          <td><strong>Laba / Keuntungan Bersih</strong></td>
-          <td class="text-right" style="font-size: 14px; font-weight: bold; color: #d97706;">Rp ${window.formatNumber(netProfit)}</td>
-        </tr>
-        <tr>
-          <td><strong>Total Volume Cetak</strong></td>
-          <td class="text-right"><strong>${window.formatNumber(totalSheets)} Lembar</strong></td>
-        </tr>
-      </table>
-    </div>
-
-    <h3>RINCIAN CATATAN TRANSAKSI</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Waktu</th>
-          <th>Tipe</th>
-          <th>Keterangan / Layanan</th>
-          <th>Metode/Kategori</th>
-          <th class="text-right">Nominal</th>
-        </tr>
-      </thead>
-      <tbody>
-  `;
-
-  if (filteredTxs.length === 0) {
-    htmlContent += `<tr><td colspan="5" class="text-center">Belum ada transaksi recorded.</td></tr>`;
-  } else {
-    filteredTxs.forEach(t => {
-      const isExp = t.type === 'EXPENSE';
-      const desc = isExp ? t.name : (t.items ? t.items.map(i => `${i.name} (${i.qty}x)`).join(', ') : 'Penjualan');
-      const catOrMethod = isExp ? t.category : t.paymentMethod;
-      const tTime = new Date(t.timestamp).toLocaleString('id-ID');
-
-      htmlContent += `
-        <tr class="${isExp ? 'expense-row' : 'income-row'}">
-          <td>${tTime}</td>
-          <td class="${isExp ? 'badge-out' : 'badge-in'}">${isExp ? 'PENGELUARAN' : 'PEMASUKAN'}</td>
-          <td>${desc}</td>
-          <td>${catOrMethod || '-'}</td>
-          <td class="text-right ${isExp ? 'badge-out' : 'badge-in'}">${isExp ? '-' : '+'}Rp ${window.formatNumber(t.totalAmount)}</td>
-        </tr>
-      `;
-    });
-  }
-
-  htmlContent += `
-      </tbody>
-    </table>
-  </body>
-  </html>
-  `;
-
-  const blob = new Blob(['\ufeff', htmlContent], {
-    type: 'application/msword'
+    breakTable.appendChild(tr);
   });
 
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `Laporan_Keuangan_${window.settings.shopName.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0,10)}.doc`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  window.showToast('File Word Laporan Berhasil Diunduh!', 'success');
+  document.getElementById('recapFooterPeriodDisplay').innerText = `Periode Bulan: ${monthStr}`;
 };
 
-window.openSettingsModal = function(activeTab = 'general') {
+window.printCurrentRecapReport = function() {
+  window.print();
+};
+
+// SETTINGS MODAL & PRESETS EDITING
+window.openSettingsModal = function(tab = 'general') {
   document.getElementById('settingShopName').value = window.settings.shopName || '';
   document.getElementById('settingQrisMerchant').value = window.settings.qrisMerchant || '';
   document.getElementById('settingQrisNmid').value = window.settings.qrisNmid || '';
   document.getElementById('settingShopAddress').value = window.settings.shopAddress || '';
   document.getElementById('settingDefaultPrice').value = window.settings.defaultPrice || 500;
-
   window.updateSettingQrPreview();
-  window.renderSettingsPresetsList();
+
+  window.renderPresetConfigList();
   window.renderExpensePresetConfigList();
   window.renderExpenseCategoryConfigList();
 
-  if (activeTab === 'expense-tab') {
-    window.switchSettingTab('expense-preset');
-  } else {
-    window.switchSettingTab('general');
-  }
-
+  window.switchSettingTab(tab);
   document.getElementById('settingsModal').classList.remove('hidden');
 };
 
@@ -2132,92 +2179,100 @@ window.closeSettingsModal = function() {
 };
 
 window.switchSettingTab = function(tab) {
-  const tGen = document.getElementById('setTabGeneral');
-  const tInc = document.getElementById('setTabIncome');
-  const tExp = document.getElementById('setTabExpense');
+  const btnGen = document.getElementById('setTabGeneralBtn');
+  const btnInc = document.getElementById('setTabIncomeBtn');
+  const btnExp = document.getElementById('setTabExpenseBtn');
 
-  const bGen = document.getElementById('setTabGeneralBtn');
-  const bInc = document.getElementById('setTabIncomeBtn');
-  const bExp = document.getElementById('setTabExpenseBtn');
+  const panelGen = document.getElementById('setTabGeneral');
+  const panelInc = document.getElementById('setTabIncome');
+  const panelExp = document.getElementById('setTabExpense');
 
   const activeClass = "px-3 py-1.5 font-bold rounded-md bg-white text-slate-800 shadow-xs";
   const inactiveClass = "px-3 py-1.5 font-bold rounded-md text-slate-600 hover:text-slate-900";
 
   if (tab === 'general') {
-    tGen.classList.remove('hidden');
-    tInc.classList.add('hidden');
-    tExp.classList.add('hidden');
-    bGen.className = activeClass;
-    bInc.className = inactiveClass;
-    bExp.className = inactiveClass;
+    btnGen.className = activeClass;
+    btnInc.className = inactiveClass;
+    btnExp.className = inactiveClass;
+    panelGen.classList.remove('hidden');
+    panelInc.classList.add('hidden');
+    panelExp.classList.add('hidden');
   } else if (tab === 'income-preset') {
-    tGen.classList.add('hidden');
-    tInc.classList.remove('hidden');
-    tExp.classList.add('hidden');
-    bGen.className = inactiveClass;
-    bInc.className = activeClass;
-    bExp.className = inactiveClass;
+    btnInc.className = activeClass;
+    btnGen.className = inactiveClass;
+    btnExp.className = inactiveClass;
+    panelInc.classList.remove('hidden');
+    panelGen.classList.add('hidden');
+    panelExp.classList.add('hidden');
   } else {
-    tGen.classList.add('hidden');
-    tInc.classList.add('hidden');
-    tExp.classList.remove('hidden');
-    bGen.className = inactiveClass;
-    bInc.className = inactiveClass;
-    bExp.className = activeClass;
+    btnExp.className = activeClass;
+    btnGen.className = inactiveClass;
+    btnInc.className = inactiveClass;
+    panelExp.classList.remove('hidden');
+    panelGen.classList.add('hidden');
+    panelInc.classList.add('hidden');
   }
 };
 
-window.renderSettingsPresetsList = function() {
-  const container = document.getElementById('presetConfigList');
-  if (!container) return;
-  container.innerHTML = '';
+window.renderPresetConfigList = function() {
+  const list = document.getElementById('presetConfigList');
+  if (!list) return;
+  list.innerHTML = '';
   (window.settings.presets || []).forEach((p, idx) => {
     const div = document.createElement('div');
-    div.className = "flex items-center gap-2 bg-slate-50 p-2 rounded-lg border border-slate-200";
+    div.className = 'flex items-center space-x-2 bg-slate-50 p-2 rounded-lg border border-slate-200';
     div.innerHTML = `
-      <input type="text" value="${p.name}" onchange="window.settings.presets[${idx}].name=this.value" class="flex-1 px-2 py-1 text-xs border border-slate-300 rounded">
-      <input type="number" value="${p.price}" onchange="window.settings.presets[${idx}].price=parseFloat(this.value)||0" class="w-24 px-2 py-1 text-xs border border-slate-300 rounded font-bold">
-      <button onclick="window.removePreset(${idx})" class="text-rose-500 hover:text-rose-700 p-1"><i class="fa-solid fa-trash"></i></button>
+      <input type="text" value="${p.name}" onchange="updatePresetValue(${idx}, 'name', this.value)" placeholder="Nama Preset" class="flex-1 px-2 py-1 text-xs border border-slate-300 rounded">
+      <input type="number" value="${p.price}" onchange="updatePresetValue(${idx}, 'price', this.value)" placeholder="Harga" class="w-24 px-2 py-1 text-xs border border-slate-300 rounded font-bold">
+      <button onclick="removePresetField(${idx})" class="text-rose-500 hover:text-rose-700 p-1"><i class="fa-solid fa-trash"></i></button>
     `;
-    container.appendChild(div);
+    list.appendChild(div);
   });
+};
+
+window.updatePresetValue = function(index, field, value) {
+  if (field === 'price') value = parseFloat(value) || 0;
+  window.settings.presets[index][field] = value;
 };
 
 window.addNewPresetField = function() {
-  window.settings.presets = window.settings.presets || [];
   window.settings.presets.push({ id: Date.now(), name: "Layanan Baru", price: 500 });
-  window.renderSettingsPresetsList();
+  window.renderPresetConfigList();
 };
 
-window.removePreset = function(idx) {
-  window.settings.presets.splice(idx, 1);
-  window.renderSettingsPresetsList();
+window.removePresetField = function(index) {
+  window.settings.presets.splice(index, 1);
+  window.renderPresetConfigList();
 };
 
 window.renderExpensePresetConfigList = function() {
-  const container = document.getElementById('expensePresetConfigList');
-  if (!container) return;
-  container.innerHTML = '';
+  const list = document.getElementById('expensePresetConfigList');
+  if (!list) return;
+  list.innerHTML = '';
   (window.settings.expensePresets || []).forEach((p, idx) => {
     const div = document.createElement('div');
-    div.className = "flex items-center gap-2 bg-slate-50 p-2 rounded-lg border border-slate-200";
+    div.className = 'flex items-center space-x-2 bg-slate-50 p-2 rounded-lg border border-slate-200';
     div.innerHTML = `
-      <input type="text" value="${p.name}" onchange="window.settings.expensePresets[${idx}].name=this.value" class="flex-1 px-2 py-1 text-xs border border-slate-300 rounded">
-      <input type="number" value="${p.price}" onchange="window.settings.expensePresets[${idx}].price=parseFloat(this.value)||0" class="w-20 px-2 py-1 text-xs border border-slate-300 rounded font-bold">
-      <button onclick="window.removeExpensePreset(${idx})" class="text-rose-500 hover:text-rose-700 p-1"><i class="fa-solid fa-trash"></i></button>
+      <input type="text" value="${p.name}" onchange="updateExpensePresetValue(${idx}, 'name', this.value)" placeholder="Nama Barang" class="flex-1 px-2 py-1 text-xs border border-slate-300 rounded">
+      <input type="number" value="${p.price}" onchange="updateExpensePresetValue(${idx}, 'price', this.value)" placeholder="Harga" class="w-24 px-2 py-1 text-xs border border-slate-300 rounded font-bold">
+      <button onclick="removeExpensePresetField(${idx})" class="text-rose-500 hover:text-rose-700 p-1"><i class="fa-solid fa-trash"></i></button>
     `;
-    container.appendChild(div);
+    list.appendChild(div);
   });
 };
 
+window.updateExpensePresetValue = function(index, field, value) {
+  if (field === 'price') value = parseFloat(value) || 0;
+  window.settings.expensePresets[index][field] = value;
+};
+
 window.addNewExpensePresetField = function() {
-  window.settings.expensePresets = window.settings.expensePresets || [];
-  window.settings.expensePresets.push({ id: Date.now(), name: "Barang Baru", price: 10000, category: "Operasional" });
+  window.settings.expensePresets.push({ id: Date.now(), name: "Pengeluaran Baru", price: 10000, category: "Operasional" });
   window.renderExpensePresetConfigList();
 };
 
-window.removeExpensePreset = function(idx) {
-  window.settings.expensePresets.splice(idx, 1);
+window.removeExpensePresetField = function(index) {
+  window.settings.expensePresets.splice(index, 1);
   window.renderExpensePresetConfigList();
 };
 
@@ -2226,163 +2281,141 @@ window.renderExpenseCategoryConfigList = function() {
   if (!container) return;
   container.innerHTML = '';
   (window.settings.expenseCategories || []).forEach((c, idx) => {
-    const badge = document.createElement('span');
-    badge.className = "px-2 py-1 bg-white border border-slate-300 rounded-md text-xs font-semibold flex items-center gap-1.5";
-    badge.innerHTML = `
-      <span>${c}</span>
-      <button onclick="window.removeExpenseCategory(${idx})" class="text-rose-500 hover:text-rose-700 text-[10px]"><i class="fa-solid fa-xmark"></i></button>
+    const span = document.createElement('span');
+    span.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 border border-slate-300 text-slate-700 rounded-full text-xs font-semibold';
+    span.innerHTML = `
+      ${c}
+      <button onclick="removeExpenseCategory(${idx})" class="text-rose-500 hover:text-rose-700 text-[10px]"><i class="fa-solid fa-xmark"></i></button>
     `;
-    container.appendChild(badge);
+    container.appendChild(span);
   });
 };
 
 window.addNewExpenseCategory = function() {
   const input = document.getElementById('newExpenseCategoryInput');
   const val = input.value.trim();
-  if (val) {
-    window.settings.expenseCategories = window.settings.expenseCategories || [];
-    if (!window.settings.expenseCategories.includes(val)) {
-      window.settings.expenseCategories.push(val);
-      input.value = '';
-      window.renderExpenseCategoryConfigList();
-    }
+  if (val && !window.settings.expenseCategories.includes(val)) {
+    window.settings.expenseCategories.push(val);
+    input.value = '';
+    window.renderExpenseCategoryConfigList();
+    window.renderExpensePresetsAndCategories();
   }
 };
 
-window.removeExpenseCategory = function(idx) {
-  window.settings.expenseCategories.splice(idx, 1);
+window.removeExpenseCategory = function(index) {
+  window.settings.expenseCategories.splice(index, 1);
   window.renderExpenseCategoryConfigList();
+  window.renderExpensePresetsAndCategories();
 };
 
 window.saveSettings = async function() {
   window.settings.shopName = document.getElementById('settingShopName').value.trim() || 'Fotocopy Qooi Luqman';
   window.settings.qrisMerchant = document.getElementById('settingQrisMerchant').value.trim() || 'Qooi luqman';
   window.settings.qrisNmid = document.getElementById('settingQrisNmid').value.trim() || 'ID1026551623055';
-  window.settings.shopAddress = document.getElementById('settingShopAddress').value.trim() || 'Jl. Pendidikan';
+  window.settings.shopAddress = document.getElementById('settingShopAddress').value.trim() || '';
   window.settings.defaultPrice = parseFloat(document.getElementById('settingDefaultPrice').value) || 500;
 
   window.saveSettingsToStorage();
 
   if (db) {
     try {
-      await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'shop_config'), window.settings);
-    } catch (e) {
+      const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'shop_config');
+      await setDoc(docRef, window.settings);
+    } catch(e) {
       console.error("Firebase settings save error:", e);
     }
   }
 
   window.loadSettings();
   window.renderPresets();
+  window.renderExpensePresetsAndCategories();
   window.closeSettingsModal();
   window.showToast('Pengaturan Berhasil Disimpan!', 'success');
 };
 
-window.showConfirmModal = function(title, message, onOk) {
-  document.getElementById('confirmTitle').innerText = title;
-  document.getElementById('confirmMessage').innerText = message;
-  const modal = document.getElementById('confirmModal');
-  const btnOk = document.getElementById('confirmBtnOk');
-  const btnCancel = document.getElementById('confirmBtnCancel');
+// EXPORT WORD FUNCTIONALITY
+window.exportToWordDocument = function() {
+  const timeFilter = document.getElementById('filterTimeframe') ? document.getElementById('filterTimeframe').value : 'today';
+  const filteredTxs = window.getFilteredTransactions(timeFilter);
 
-  const cleanup = () => {
-    modal.classList.add('hidden');
-    btnOk.onclick = null;
-    btnCancel.onclick = null;
-  };
+  const incomeTxs = filteredTxs.filter(t => t.type !== 'EXPENSE');
+  const expenseTxs = filteredTxs.filter(t => t.type === 'EXPENSE');
 
-  btnOk.onclick = () => {
-    cleanup();
-    if (onOk) onOk();
-  };
-  btnCancel.onclick = cleanup;
+  const totalIncome = incomeTxs.reduce((sum, t) => sum + (t.totalAmount || 0), 0);
+  const totalExpense = expenseTxs.reduce((sum, t) => sum + (t.totalAmount || 0), 0);
+  const netProfit = totalIncome - totalExpense;
 
-  modal.classList.remove('hidden');
-};
+  let rowsHtml = '';
+  filteredTxs.forEach((tx, idx) => {
+    const d = new Date(tx.timestamp).toLocaleString('id-ID');
+    const isExp = tx.type === 'EXPENSE';
+    const itemsStr = isExp ? `[${tx.category}] ${tx.name}` : (tx.items ? tx.items.map(i => `${i.name} (${i.qty}x)`).join(', ') : 'Penjualan');
+    rowsHtml += `
+      <tr>
+        <td style="border:1px solid #cbd5e1; padding:8px; text-align:center;">${idx + 1}</td>
+        <td style="border:1px solid #cbd5e1; padding:8px;">${d}</td>
+        <td style="border:1px solid #cbd5e1; padding:8px;">${isExp ? 'PENGELUARAN' : 'PEMASUKAN'}</td>
+        <td style="border:1px solid #cbd5e1; padding:8px;">${itemsStr}</td>
+        <td style="border:1px solid #cbd5e1; padding:8px; text-align:right; color:${isExp ? '#dc2626' : '#16a34a'}; font-weight:bold;">
+          ${isExp ? '-' : '+'}Rp ${window.formatNumber(tx.totalAmount)}
+        </td>
+      </tr>
+    `;
+  });
 
-window.openReceiptModal = function(tx) {
-  const content = document.getElementById('receiptContent');
-  if (!content) return;
+  const content = `
+    <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+    <head><title>Laporan Keuangan ${window.settings.shopName}</title>
+    <style>
+      body { font-family: Arial, sans-serif; font-size: 12pt; margin: 20px; }
+      h1, h2 { text-align: center; margin: 5px 0; }
+      table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+      th { background-color: #0f172a; color: white; border: 1px solid #cbd5e1; padding: 8px; }
+      .summary-box { border: 2px solid #0284c7; background-color: #f0f9ff; padding: 15px; margin: 15px 0; border-radius: 8px; }
+    </style>
+    </head>
+    <body>
+      <h1>${window.settings.shopName.toUpperCase()}</h1>
+      <h2>LAPORAN REKAPITULASI KEUANGAN</h2>
+      <p style="text-align:center; color:#64748b; font-size:10pt;">${window.settings.shopAddress} | Dicetak: ${new Date().toLocaleString('id-ID')}</p>
+      <hr/>
 
-  const itemsHtml = (tx.items || []).map(i => `
-    <div class="flex justify-between">
-      <span>${i.name} (x${i.qty})</span>
-      <span>Rp ${window.formatNumber(i.subtotal)}</span>
-    </div>
-  `).join('');
-
-  content.innerHTML = `
-    <div class="text-center font-bold text-sm uppercase border-b border-dashed border-slate-300 pb-2">
-      ${window.settings.shopName}<br>
-      <span class="text-[10px] font-normal normal-case">${window.settings.shopAddress}</span>
-    </div>
-    <div class="text-[10px] text-slate-500 py-1 border-b border-dashed border-slate-300">
-      <div>ID: ${tx.id}</div>
-      <div>Waktu: ${new Date(tx.timestamp).toLocaleString('id-ID')}</div>
-      <div>Metode: ${tx.paymentMethod}</div>
-    </div>
-    <div class="space-y-1 py-2 border-b border-dashed border-slate-300">
-      ${itemsHtml}
-    </div>
-    <div class="space-y-1 font-bold pt-1">
-      <div class="flex justify-between text-sm">
-        <span>TOTAL:</span>
-        <span>Rp ${window.formatNumber(tx.totalAmount)}</span>
+      <div class="summary-box">
+        <h3>RINGKASAN KEUANGAN (${timeFilter === 'today' ? 'HARI INI' : 'SEMUA RIWAYAT'}):</h3>
+        <ul>
+          <li><strong>Total Pemasukan (Omset):</strong> Rp ${window.formatNumber(totalIncome)}</li>
+          <li><strong>Total Pengeluaran Toko:</strong> Rp ${window.formatNumber(totalExpense)}</li>
+          <li><strong>Laba / Keuntungan Bersih:</strong> <span style="color:${netProfit >= 0 ? '#16a34a' : '#dc2626'}; font-weight:bold;">Rp ${window.formatNumber(netProfit)}</span></li>
+        </ul>
       </div>
-      <div class="flex justify-between text-xs text-slate-600">
-        <span>Bayar (${tx.paymentMethod}):</span>
-        <span>Rp ${window.formatNumber(tx.cashPaid)}</span>
-      </div>
-      <div class="flex justify-between text-xs text-slate-600">
-        <span>Kembali:</span>
-        <span>Rp ${window.formatNumber(tx.change)}</span>
-      </div>
-    </div>
-    <div class="text-center text-[10px] text-slate-500 pt-2 border-t border-dashed border-slate-300">
-      Terima Kasih Atas Kunjungan Anda!
-    </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Waktu</th>
+            <th>Jenis</th>
+            <th>Keterangan</th>
+            <th>Nominal</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rowsHtml}
+        </tbody>
+      </table>
+    </body>
+    </html>
   `;
 
-  document.getElementById('receiptModal').classList.remove('hidden');
-};
-
-window.closeReceiptModal = function() {
-  document.getElementById('receiptModal').classList.add('hidden');
-};
-
-window.printReceipt = function() {
-  const printWindow = window.open('', '', 'width=400,height=600');
-  const receiptHtml = document.getElementById('receiptContent').innerHTML;
-  printWindow.document.write(`
-    <html>
-      <head>
-        <title>Struk Pembayaran</title>
-        <style>
-          body { font-family: monospace; font-size: 12px; padding: 10px; margin: 0; width: 280px; }
-          .text-center { text-align: center; }
-          .font-bold { font-weight: bold; }
-          .flex { display: flex; }
-          .justify-between { justify-content: space-between; }
-          .border-b { border-bottom: 1px dashed #000; }
-          .py-1 { padding-top: 4px; padding-bottom: 4px; }
-          .py-2 { padding-top: 8px; padding-bottom: 8px; }
-          .pt-1 { padding-top: 4px; }
-          .pt-2 { padding-top: 8px; }
-          .space-y-1 > * + * { margin-top: 4px; }
-        </style>
-      </head>
-      <body>
-        ${receiptHtml}
-        <script>
-          window.onload = function() { window.print(); window.close(); }
-        <\/script>
-      </body>
-    </html>
-  `);
-  printWindow.document.close();
-};
-
-window.printCurrentRecapReport = function() {
-  window.print();
+  const blob = new Blob(['\ufeff', content], { type: 'application/msword' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `Laporan_Keuangan_${window.settings.shopName.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.doc`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  window.showToast('Laporan Word (.doc) Berhasil Diunduh!', 'success');
 };
 </script>
 </body>
