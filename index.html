@@ -66,7 +66,7 @@ body { font-family: 'Inter', sans-serif; }
             <i class="fa-solid fa-cloud-check text-[9px]"></i> Memuat Data...
           </span>
         </div>
-        <p class="text-xs text-slate-400">Pencatatan Pemasukan, Pengeluaran & Rekap Keuangan</p>
+        <p class="text-xs text-slate-400">Pencatatan Pemasukan, Pengeluaran & Rekap Keuangan (Modal vs Keuntungan)</p>
       </div>
     </div>
     <div class="flex items-center space-x-2 sm:space-x-3">
@@ -101,7 +101,7 @@ body { font-family: 'Inter', sans-serif; }
         <i class="fa-solid fa-cart-plus"></i> Transaksi Penjualan (Pemasukan)
       </button>
       <button id="tabBtnExpense" onclick="switchInputMode('expense')" class="flex-1 py-2 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-slate-100 text-slate-600 hover:bg-slate-200">
-        <i class="fa-solid fa-wallet text-rose-500"></i> Catat Pengeluaran Toko
+        <i class="fa-solid fa-wallet text-rose-500"></i> Catat Pengeluaran / Setoran Toko
       </button>
     </div>
 
@@ -286,11 +286,11 @@ body { font-family: 'Inter', sans-serif; }
       </div>
     </div>
 
-    <!-- PANEL 2: FORM INPUT PENGELUARAN TOKO -->
+    <!-- PANEL 2: FORM INPUT PENGELUARAN TOKO & SETORAN -->
     <div id="panelExpenseSection" class="hidden bg-white rounded-xl p-5 shadow-sm border border-slate-200 space-y-4">
       <div class="flex items-center justify-between border-b border-slate-100 pb-3">
         <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2">
-          <i class="fa-solid fa-receipt text-rose-500 text-lg"></i> Catat Pengeluaran Operasional Toko
+          <i class="fa-solid fa-receipt text-rose-500 text-lg"></i> Catat Pengeluaran Operasional / Setoran
         </h2>
         <button onclick="openSettingsModal('expense-tab')" class="text-xs text-rose-600 hover:text-rose-800 font-bold flex items-center gap-1">
           <i class="fa-solid fa-gear"></i> Setting Preset Pengeluaran
@@ -305,26 +305,50 @@ body { font-family: 'Inter', sans-serif; }
         </div>
       </div>
 
-      <!-- Expense Form Inputs -->
+      <!-- Expense Form Inputs dengan Pemisahan Sumber Uang (Modal vs Keuntungan) -->
       <div class="space-y-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
         <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-1">Nama / Keterangan Pengeluaran</label>
-          <input type="text" id="expenseNameInput" placeholder="Contoh: Beli Kertas HVS 70gr 2 Rim" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500">
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Nama / Keterangan Transaksi</label>
+          <input type="text" id="expenseNameInput" placeholder="Contoh: Beli Kertas HVS / Setoran Keuntungan" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500">
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Kategori Pengeluaran</label>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Kategori Transaksi</label>
             <select id="expenseCategoryInput" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 bg-white">
               <!-- Dynamic Expense Categories -->
             </select>
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Jumlah Biaya / Outflow (Rp)</label>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Jumlah Biaya / Setoran (Rp)</label>
             <input type="number" id="expenseAmountInput" min="0" placeholder="0" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg font-bold text-rose-600 focus:outline-none focus:ring-2 focus:ring-rose-500">
           </div>
         </div>
+
+        <!-- OPSI FITUR FITUR PEMISAH UANG MODAL VS KEUNTUNGAN -->
+        <div class="bg-white p-3 rounded-lg border border-amber-200 space-y-2">
+          <label class="block text-xs font-bold text-slate-800 flex items-center gap-1">
+            <i class="fa-solid fa-building-columns text-amber-500"></i> Sumber Uang Mana yang Digunakan?
+          </label>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <label class="flex items-center gap-2 p-2 rounded border border-slate-200 cursor-pointer hover:bg-slate-50">
+              <input type="radio" name="expenseFundSource" value="MODAL" checked class="text-rose-600 focus:ring-rose-500">
+              <div>
+                <span class="font-bold block text-slate-800">Uang Modal</span>
+                <span class="text-[10px] text-slate-500">Kertas, Tinta, Peralatan Toko</span>
+              </div>
+            </label>
+            <label class="flex items-center gap-2 p-2 rounded border border-slate-200 cursor-pointer hover:bg-slate-50">
+              <input type="radio" name="expenseFundSource" value="PROFIT" class="text-rose-600 focus:ring-rose-500">
+              <div>
+                <span class="font-bold block text-amber-700">Uang Keuntungan</span>
+                <span class="text-[10px] text-slate-500">Setoran Pemilik, Bonus, Konsumsi</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
         <button onclick="saveExpenseTransaction()" class="w-full py-3 bg-rose-600 hover:bg-rose-700 active:scale-95 text-white font-bold text-sm rounded-lg shadow-md transition flex items-center justify-center gap-2">
-          <i class="fa-solid fa-minus-circle text-base"></i> SIMPAN PENGELUARAN BARU
+          <i class="fa-solid fa-minus-circle text-base"></i> SIMPAN PENGELUARAN / SETORAN
         </button>
       </div>
     </div>
@@ -332,12 +356,12 @@ body { font-family: 'Inter', sans-serif; }
 
   <!-- RIGHT COLUMN: Laporan Pemasukan, Pengeluaran & Export Word (5 cols on lg) -->
   <section class="lg:col-span-5 space-y-5">
-    <!-- Summary Stats Cards -->
+    <!-- Summary Stats Cards dengan Pemisahan Saldo Modal & Keuntungan -->
     <div class="grid grid-cols-2 gap-3">
-      <!-- CARD SALDO KAS TOKO -->
+      <!-- CARD TOTAL SALDO KAS TOKO -->
       <div class="bg-gradient-to-br from-blue-900 to-indigo-900 p-3.5 rounded-xl border border-blue-700 shadow-sm flex flex-col justify-between text-white col-span-2 relative overflow-hidden group">
         <div class="flex items-center justify-between">
-          <span class="text-[11px] font-bold text-blue-200 uppercase tracking-wider">Total Saldo Toko saat ini</span>
+          <span class="text-[11px] font-bold text-blue-200 uppercase tracking-wider">Total Saldo Kas Toko Saat Ini</span>
           <div class="flex items-center space-x-2">
             <button onclick="toggleBalanceVisibility()" type="button" title="Sembunyikan / Tampilkan Nominal Saldo" class="text-blue-200 hover:text-white bg-blue-800/60 hover:bg-blue-800 p-1.5 rounded-lg border border-blue-600/50 transition flex items-center justify-center text-xs">
               <i id="btnToggleBalanceIcon" class="fa-solid fa-eye"></i>
@@ -347,8 +371,33 @@ body { font-family: 'Inter', sans-serif; }
         </div>
         <div class="flex items-baseline justify-between mt-2">
           <span class="text-xl sm:text-2xl font-black text-emerald-400 tracking-tight transition-all duration-200" id="statTotalBalance">Rp 0</span>
-          <span class="text-[10px] text-blue-200" id="statBalanceSummary">Pemasukan - Pengeluaran</span>
+          <span class="text-[10px] text-blue-200">Uang Modal + Uang Keuntungan</span>
         </div>
+      </div>
+
+      <!-- CARD KHUSUS UANG MODAL & UANG KEUNTUNGAN -->
+      <div class="bg-slate-800 text-white p-3 rounded-xl border border-slate-700 shadow-sm flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-1.5">
+            <span class="text-[10px] font-bold text-slate-300 uppercase tracking-wider">Saldo Uang Modal</span>
+            <!-- TOMBOL MERUBAH / SUNTIK MODAL -->
+            <button onclick="openCapitalModal()" title="Suntik / Ubah Uang Modal" class="text-sky-400 hover:text-sky-200 bg-slate-700/80 hover:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] border border-slate-600 transition flex items-center gap-1">
+              <i class="fa-solid fa-pen-to-square"></i> Ubah
+            </button>
+          </div>
+          <i class="fa-solid fa-boxes-packing text-sky-400 text-xs"></i>
+        </div>
+        <span class="text-base sm:text-lg font-extrabold text-sky-300 mt-1" id="statCapitalBalance">Rp 0</span>
+        <span class="text-[9px] text-slate-400 mt-0.5">Operasional & Stok</span>
+      </div>
+
+      <div class="bg-gradient-to-br from-amber-600 to-amber-700 text-white p-3 rounded-xl border border-amber-500 shadow-sm flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <span class="text-[10px] font-bold text-amber-100 uppercase tracking-wider">Saldo Uang Keuntungan</span>
+          <i class="fa-solid fa-sack-dollar text-amber-200 text-xs"></i>
+        </div>
+        <span class="text-base sm:text-lg font-extrabold text-amber-200 mt-1" id="statProfitBalance">Rp 0</span>
+        <span class="text-[9px] text-amber-100 mt-0.5">Siap Disetor / Laba Bersih</span>
       </div>
 
       <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
@@ -371,7 +420,7 @@ body { font-family: 'Inter', sans-serif; }
 
       <div class="bg-gradient-to-br from-slate-900 to-slate-800 p-3.5 rounded-xl border border-slate-700 shadow-sm flex flex-col justify-between text-white col-span-2 sm:col-span-1">
         <div class="flex items-center justify-between">
-          <span class="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Keuntungan Bersih Hari Ini</span>
+          <span class="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Laba Bersih Hari Ini</span>
           <i class="fa-solid fa-chart-line text-amber-400 text-xs"></i>
         </div>
         <span class="text-lg sm:text-xl font-black text-amber-400 mt-1" id="statTodayProfit">Rp 0</span>
@@ -407,7 +456,7 @@ body { font-family: 'Inter', sans-serif; }
 
       <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl space-y-2">
         <p class="text-xs text-blue-800">
-          <i class="fa-solid fa-circle-info mr-1"></i> File Word mencakup rincian Pemasukan, Pengeluaran, Saldo Kas, serta Rincian Laba Bersih.
+          <i class="fa-solid fa-circle-info mr-1"></i> File Word mencakup rincian Pemasukan, Pengeluaran, Uang Modal, serta Uang Keuntungan Bersih.
         </p>
         <button onclick="exportToWordDocument()" class="w-full py-2.5 bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold rounded-lg shadow flex items-center justify-center gap-2 transition active:scale-95">
           <i class="fa-solid fa-download"></i> DOWNLOAD FILE WORD LAPORAN (.DOC)
@@ -446,6 +495,76 @@ body { font-family: 'Inter', sans-serif; }
     </div>
   </section>
 </main>
+
+<!-- MODAL POPUP SUNTIK / KELOLA UANG MODAL (FITUR BARU) -->
+<div id="capitalModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print" onclick="closeCapitalModal(event)">
+  <div class="bg-white rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl relative border border-slate-200 text-slate-900 space-y-4" onclick="event.stopPropagation()">
+    <button onclick="closeCapitalModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 w-8 h-8 rounded-full flex items-center justify-center transition">
+      <i class="fa-solid fa-xmark text-base"></i>
+    </button>
+
+    <div class="flex items-center space-x-3 text-sky-600 border-b border-slate-100 pb-3">
+      <div class="p-2.5 bg-sky-100 text-sky-600 rounded-xl">
+        <i class="fa-solid fa-boxes-packing text-xl"></i>
+      </div>
+      <div>
+        <h3 class="font-bold text-base text-slate-900">Kelola / Suntik Uang Modal</h3>
+        <p class="text-xs text-slate-500">Ubah nominal modal atau suntik modal usaha toko</p>
+      </div>
+    </div>
+
+    <!-- Tab Pilihan: Tambah Suntik Modal ATAU Setting Set Ulang Nominal -->
+    <div class="bg-slate-100 p-1 rounded-lg flex text-xs font-bold gap-1">
+      <button id="tabCapAddBtn" onclick="switchCapitalTab('add')" class="flex-1 py-1.5 rounded-md bg-white text-sky-700 shadow-xs text-center">
+        <i class="fa-solid fa-plus-circle mr-1"></i> Suntik / Tarik Modal
+      </button>
+      <button id="tabCapResetBtn" onclick="switchCapitalTab('reset')" class="flex-1 py-1.5 rounded-md text-slate-600 hover:text-slate-900 text-center">
+        <i class="fa-solid fa-sliders mr-1"></i> Atur Ulang Nominal
+      </button>
+    </div>
+
+    <!-- TAB 1: SUNTIK / TAMBAH / TARIK MODAL -->
+    <div id="panelCapAdd" class="space-y-3 text-xs">
+      <div>
+        <label class="block font-semibold text-slate-700 mb-1">Aksi Modal</label>
+        <select id="capitalActionType" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 font-medium">
+          <option value="INJECTION">Suntik Tambah Modal (+ Kas & Modal Usaha)</option>
+          <option value="WITHDRAW">Tarik Sebagian Modal (- Kas & Modal Usaha)</option>
+        </select>
+      </div>
+      <div>
+        <label class="block font-semibold text-slate-700 mb-1">Nominal Uang (Rp)</label>
+        <input type="number" id="capitalAmountInput" min="0" placeholder="Contoh: 500000" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg font-bold text-sky-600 focus:ring-2 focus:ring-sky-500">
+      </div>
+      <div>
+        <label class="block font-semibold text-slate-700 mb-1">Keterangan / Catatan Modal</label>
+        <input type="text" id="capitalNoteInput" placeholder="Contoh: Suntik Modal Pembelian Stok Kertas & Tinta" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500">
+      </div>
+      <button onclick="processCapitalAdjustment()" class="w-full py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs rounded-xl shadow transition flex items-center justify-center gap-2">
+        <i class="fa-solid fa-check-circle"></i> SIMPAN PERUBAHAN MODAL
+      </button>
+    </div>
+
+    <!-- TAB 2: ATUR ULANG NOMINAL PASTI -->
+    <div id="panelCapReset" class="space-y-3 text-xs hidden">
+      <div class="bg-amber-50 border border-amber-200 p-2.5 rounded-lg text-amber-800 text-[11px] leading-relaxed">
+        <i class="fa-solid fa-circle-info mr-1"></i> Fitur ini langsung mengganti saldo nominal uang modal ke angka baru yang Anda tentukan (misal saat perhitungan awal modal baru).
+      </div>
+      <div>
+        <label class="block font-semibold text-slate-700 mb-1">Saldo Uang Modal Saat Ini</label>
+        <div class="text-sm font-black text-sky-600" id="currentCapModalDisplay">Rp 0</div>
+      </div>
+      <div>
+        <label class="block font-semibold text-slate-700 mb-1">Set Nominal Uang Modal Baru (Rp)</label>
+        <input type="number" id="capitalExactAmountInput" min="0" placeholder="Masukkan total nominal modal pasti" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg font-bold text-sky-600 focus:ring-2 focus:ring-sky-500">
+      </div>
+      <button onclick="processCapitalExactReset()" class="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl shadow transition flex items-center justify-center gap-2">
+        <i class="fa-solid fa-rotate"></i> ATUR NOMINAL PASTI MODAL
+      </button>
+    </div>
+
+  </div>
+</div>
 
 <!-- MODAL POPUP QRIS TERPERBESAR (ZOOM MODAL) -->
 <div id="qrisZoomModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden no-print" onclick="closeQrisZoomModal(event)">
@@ -513,7 +632,7 @@ body { font-family: 'Inter', sans-serif; }
         </div>
         <div>
           <h3 class="font-bold text-base sm:text-lg">Rekapitulasi Penghasilan & Keuangan</h3>
-          <p class="text-xs text-slate-400">Pencatatan Omset, Pengeluaran Toko, Saldo Kas & Laba Bersih</p>
+          <p class="text-xs text-slate-400">Pencatatan Omset, Modal, Pengeluaran Toko & Laba Bersih</p>
         </div>
       </div>
       <button onclick="closeRecapModal()" class="text-slate-400 hover:text-white text-xl p-1">
@@ -896,9 +1015,9 @@ window.settings = {
     { id: 1, name: "Kertas A4 / F4 1 Rim", price: 55000, category: "Bahan Baku" },
     { id: 2, name: "Tinta Printer Epson/Canon", price: 85000, category: "Bahan Baku" },
     { id: 3, name: "Listrik / Token Toko", price: 100000, category: "Operasional" },
-    { id: 4, name: "Mika / Plastik / Staples", price: 25000, category: "Bahan Baku" }
+    { id: 4, name: "Setoran Laba / Keuntungan", price: 100000, category: "Setoran Toko" }
   ],
-  expenseCategories: ["Bahan Baku", "Operasional", "Maintenance", "Konsumsi", "Lain-lain"]
+  expenseCategories: ["Bahan Baku", "Operasional", "Maintenance", "Konsumsi", "Setoran Toko", "Suntik / Adjust Modal", "Lain-lain"]
 };
 
 window.cart = [];
@@ -940,6 +1059,176 @@ window.formatNumber = function(num) {
   return new Intl.NumberFormat('id-ID').format(num || 0);
 };
 
+// FITUR KELOLA / SUNTIK UANG MODAL
+window.openCapitalModal = function() {
+  const modal = document.getElementById('capitalModal');
+  const currentCapEl = document.getElementById('currentCapModalDisplay');
+  
+  // Hitung modal saat ini
+  let currentCap = 0;
+  window.transactions.forEach(t => {
+    if (t.type !== 'EXPENSE') {
+      currentCap += (t.capitalShare || Math.round((t.totalAmount || 0) * 0.4));
+    } else {
+      if (t.fundSource !== 'PROFIT') {
+        if (t.isCapitalAdjustment) {
+          if (t.adjustmentType === 'INJECTION' || t.adjustmentType === 'EXACT_SET') {
+            currentCap += (t.totalAmount || 0);
+          } else if (t.adjustmentType === 'WITHDRAW') {
+            currentCap -= (t.totalAmount || 0);
+          }
+        } else {
+          currentCap -= (t.totalAmount || 0);
+        }
+      }
+    }
+  });
+
+  if (currentCapEl) currentCapEl.innerText = `Rp ${window.formatNumber(currentCap)}`;
+  document.getElementById('capitalAmountInput').value = '';
+  document.getElementById('capitalExactAmountInput').value = '';
+  document.getElementById('capitalNoteInput').value = '';
+  window.switchCapitalTab('add');
+  modal.classList.remove('hidden');
+};
+
+window.closeCapitalModal = function(event) {
+  if (event && event.target && event.target.id !== 'capitalModal' && !event.target.closest('button')) {
+    return;
+  }
+  const modal = document.getElementById('capitalModal');
+  if (modal) modal.classList.add('hidden');
+};
+
+window.switchCapitalTab = function(mode) {
+  const tabAdd = document.getElementById('tabCapAddBtn');
+  const tabReset = document.getElementById('tabCapResetBtn');
+  const panelAdd = document.getElementById('panelCapAdd');
+  const panelReset = document.getElementById('panelCapReset');
+
+  if (mode === 'add') {
+    tabAdd.className = 'flex-1 py-1.5 rounded-md bg-white text-sky-700 shadow-xs text-center font-bold';
+    tabReset.className = 'flex-1 py-1.5 rounded-md text-slate-600 hover:text-slate-900 text-center font-bold';
+    panelAdd.classList.remove('hidden');
+    panelReset.classList.add('hidden');
+  } else {
+    tabReset.className = 'flex-1 py-1.5 rounded-md bg-white text-sky-700 shadow-xs text-center font-bold';
+    tabAdd.className = 'flex-1 py-1.5 rounded-md text-slate-600 hover:text-slate-900 text-center font-bold';
+    panelReset.classList.remove('hidden');
+    panelAdd.classList.add('hidden');
+  }
+};
+
+// PROSES SUNTIK / TARIK MODAL (DIBUAT TRANSAKSI KONEK)
+window.processCapitalAdjustment = async function() {
+  const actionType = document.getElementById('capitalActionType').value;
+  const amount = parseFloat(document.getElementById('capitalAmountInput').value) || 0;
+  const note = document.getElementById('capitalNoteInput').value.trim() || (actionType === 'INJECTION' ? 'Suntikan Tambah Uang Modal Usaha' : 'Penarikan Sebagian Uang Modal Usaha');
+
+  if (amount <= 0) {
+    window.showToast('Isi nominal modal yang valid', 'warning');
+    return;
+  }
+
+  const tx = {
+    id: 'CAP' + Date.now(),
+    type: 'EXPENSE', // Dicatat di aliran kas modal
+    timestamp: new Date().toISOString(),
+    name: note,
+    category: 'Suntik / Adjust Modal',
+    fundSource: 'MODAL',
+    totalAmount: actionType === 'INJECTION' ? amount : amount,
+    isCapitalAdjustment: true,
+    adjustmentType: actionType,
+    totalSheets: 0
+  };
+
+  if (actionType === 'INJECTION') {
+    // Jika suntik modal, kita catat sebagai transaksi penambah modal (negative expense/penambahan)
+    tx.isCapitalInjection = true;
+  }
+
+  window.transactions.unshift(tx);
+  window.saveTransactionsToStorage();
+
+  if (db) {
+    try {
+      await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'transactions', tx.id), tx);
+    } catch (e) {
+      console.error("Firebase capital adjust save error:", e);
+    }
+  }
+
+  window.renderHistoryTable();
+  window.updateSummaryStats();
+  window.closeCapitalModal();
+  window.showToast(`Berhasil ${actionType === 'INJECTION' ? 'Menambah Suntikan' : 'Menarik'} Modal Rp ${window.formatNumber(amount)}!`, 'success');
+};
+
+// PROSES SET ULANG PASTI NOMINAL MODAL
+window.processCapitalExactReset = async function() {
+  const targetExact = parseFloat(document.getElementById('capitalExactAmountInput').value);
+  if (isNaN(targetExact) || targetExact < 0) {
+    window.showToast('Isi nominal modal baru yang valid', 'warning');
+    return;
+  }
+
+  // Hitung modal saat ini
+  let currentCap = 0;
+  window.transactions.forEach(t => {
+    if (t.type !== 'EXPENSE') {
+      currentCap += (t.capitalShare || Math.round((t.totalAmount || 0) * 0.4));
+    } else {
+      if (t.fundSource !== 'PROFIT') {
+        if (t.isCapitalAdjustment) {
+          if (t.adjustmentType === 'INJECTION' || t.adjustmentType === 'EXACT_SET') {
+            currentCap += (t.totalAmount || 0);
+          } else if (t.adjustmentType === 'WITHDRAW') {
+            currentCap -= (t.totalAmount || 0);
+          }
+        } else {
+          currentCap -= (t.totalAmount || 0);
+        }
+      }
+    }
+  });
+
+  const diff = targetExact - currentCap;
+  if (diff === 0) {
+    window.showToast('Nominal modal sudah sama dengan saldo saat ini', 'info');
+    return;
+  }
+
+  const tx = {
+    id: 'CAP' + Date.now(),
+    type: 'EXPENSE',
+    timestamp: new Date().toISOString(),
+    name: `Penyesuaian Atur Ulang Nominal Modal ke Rp ${window.formatNumber(targetExact)}`,
+    category: 'Suntik / Adjust Modal',
+    fundSource: 'MODAL',
+    totalAmount: diff, // Bisa positif / negatif selisih
+    isCapitalAdjustment: true,
+    adjustmentType: 'EXACT_SET',
+    totalSheets: 0
+  };
+
+  window.transactions.unshift(tx);
+  window.saveTransactionsToStorage();
+
+  if (db) {
+    try {
+      await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'transactions', tx.id), tx);
+    } catch (e) {
+      console.error("Firebase capital reset save error:", e);
+    }
+  }
+
+  window.renderHistoryTable();
+  window.updateSummaryStats();
+  window.closeCapitalModal();
+  window.showToast(`Nominal Modal Berhasil Diatur ke Rp ${window.formatNumber(targetExact)}!`, 'success');
+};
+
 // FITUR POPUP MODAL QRIS TERPERBESAR (ZOOM)
 window.openQrisZoomModal = function() {
   const modal = document.getElementById('qrisZoomModal');
@@ -955,7 +1244,6 @@ window.openQrisZoomModal = function() {
   const total = window.cart.reduce((sum, i) => sum + i.subtotal, 0);
   if (tagihanEl) tagihanEl.innerText = `Rp ${window.formatNumber(total)}`;
 
-  // Gunakan Foto QRIS yang diunggah jika ada
   if (window.settings.qrImage) {
     zoomQrImg.src = window.settings.qrImage;
     zoomQrImg.classList.remove('hidden');
@@ -978,10 +1266,10 @@ window.closeQrisZoomModal = function(event) {
   if (modal) modal.classList.add('hidden');
 };
 
-// Event listener tombol ESC untuk menutup modal
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
     window.closeQrisZoomModal();
+    window.closeCapitalModal();
     window.closeRecapModal();
     window.closeSettingsModal();
     window.closeReceiptModal();
@@ -1523,6 +1811,10 @@ window.processTransaction = async function() {
 
   const totalSheets = window.cart.reduce((sum, i) => sum + i.qty, 0);
 
+  // Perhitungan Estimasi Alokasi Modal vs Keuntungan (Default 40% Modal, 60% Keuntungan)
+  const estimatedCapital = Math.round(total * 0.4);
+  const estimatedProfit = total - estimatedCapital;
+
   const tx = {
     id: 'TX' + Date.now(),
     type: 'INCOME',
@@ -1532,6 +1824,8 @@ window.processTransaction = async function() {
     cashPaid: cash,
     change: change,
     totalSheets: totalSheets,
+    capitalShare: estimatedCapital,
+    profitShare: estimatedProfit,
     paymentMethod: window.selectedPaymentMethod === 'qr' ? 'QRIS' : 'Tunai'
   };
 
@@ -1560,6 +1854,13 @@ window.selectExpensePreset = function(name, price, category) {
   document.getElementById('expenseNameInput').value = name;
   document.getElementById('expenseAmountInput').value = price;
   document.getElementById('expenseCategoryInput').value = category;
+  
+  // Jika preset setoran, otomatis pilih radio Uang Keuntungan
+  if (category === 'Setoran Toko' || name.toLowerCase().includes('setor')) {
+    const radios = document.getElementsByName('expenseFundSource');
+    radios.forEach(r => { if(r.value === 'PROFIT') r.checked = true; });
+  }
+
   window.showToast(`Preset: ${name}`, 'info');
 };
 
@@ -1567,9 +1868,16 @@ window.saveExpenseTransaction = async function() {
   const name = document.getElementById('expenseNameInput').value.trim();
   const category = document.getElementById('expenseCategoryInput').value;
   const amount = parseFloat(document.getElementById('expenseAmountInput').value) || 0;
+  
+  // Membaca Sumber Uang yang Dipilih (MODAL / PROFIT)
+  const fundSourceRadios = document.getElementsByName('expenseFundSource');
+  let fundSource = 'MODAL';
+  fundSourceRadios.forEach(r => {
+    if (r.checked) fundSource = r.value;
+  });
 
   if (!name) {
-    window.showToast('Mohon isi nama pengeluaran', 'warning');
+    window.showToast('Mohon isi nama pengeluaran / setoran', 'warning');
     return;
   }
   if (amount <= 0) {
@@ -1583,6 +1891,7 @@ window.saveExpenseTransaction = async function() {
     timestamp: new Date().toISOString(),
     name: name,
     category: category,
+    fundSource: fundSource, // Modal vs Keuntungan
     totalAmount: amount,
     totalSheets: 0
   };
@@ -1602,7 +1911,7 @@ window.saveExpenseTransaction = async function() {
   document.getElementById('expenseAmountInput').value = '';
   window.renderHistoryTable();
   window.updateSummaryStats();
-  window.showToast('Catatan Pengeluaran Berhasil Disimpan!', 'success');
+  window.showToast(`Catatan ${fundSource === 'PROFIT' ? 'Setoran / Laba' : 'Pengeluaran Modal'} Berhasil Disimpan!`, 'success');
 };
 
 window.setHistoryFilterTab = function(tab) {
@@ -1651,13 +1960,32 @@ window.renderHistoryTable = function() {
     const dateFormatted = dateObj.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit' });
     const isExpense = tx.type === 'EXPENSE';
 
-    const typeBadge = isExpense
-      ? '<span class="text-[9px] bg-rose-100 text-rose-700 font-bold px-1.5 py-0.5 rounded border border-rose-200">Pengeluaran</span>'
-      : (tx.paymentMethod === 'QRIS'
+    let typeBadge = '';
+    if (isExpense) {
+      if (tx.isCapitalAdjustment) {
+        typeBadge = `<span class="text-[9px] bg-sky-100 text-sky-800 font-bold px-1.5 py-0.5 rounded border border-sky-200">Suntik Modal</span>`;
+      } else {
+        const fundTag = tx.fundSource === 'PROFIT' ? 'Potong Laba' : 'Potong Modal';
+        typeBadge = `<span class="text-[9px] bg-rose-100 text-rose-700 font-bold px-1.5 py-0.5 rounded border border-rose-200">${fundTag}</span>`;
+      }
+    } else {
+      typeBadge = tx.paymentMethod === 'QRIS'
         ? '<span class="text-[9px] bg-purple-100 text-purple-700 font-bold px-1.5 py-0.5 rounded border border-purple-200">QRIS</span>'
-        : '<span class="text-[9px] bg-emerald-100 text-emerald-700 font-bold px-1.5 py-0.5 rounded border border-emerald-200">Tunai</span>');
+        : '<span class="text-[9px] bg-emerald-100 text-emerald-700 font-bold px-1.5 py-0.5 rounded border border-emerald-200">Tunai</span>';
+    }
 
     let titleText = isExpense ? `[${tx.category}] ${tx.name}` : (tx.items ? tx.items.map(i => i.name).join(', ') : 'Penjualan');
+
+    let amountDisplay = '';
+    if (isExpense) {
+      if (tx.isCapitalAdjustment && tx.adjustmentType === 'INJECTION') {
+        amountDisplay = `<span class="text-sky-600 font-bold">+Rp ${window.formatNumber(tx.totalAmount)}</span>`;
+      } else {
+        amountDisplay = `<span class="text-rose-600 font-bold">-Rp ${window.formatNumber(tx.totalAmount)}</span>`;
+      }
+    } else {
+      amountDisplay = `<span class="text-emerald-600 font-bold">+Rp ${window.formatNumber(tx.totalAmount)}</span>`;
+    }
 
     const tr = document.createElement('tr');
     tr.className = 'hover:bg-slate-50 transition border-b border-slate-100';
@@ -1669,8 +1997,8 @@ window.renderHistoryTable = function() {
       <td class="p-2 text-slate-700 max-w-[140px] truncate" title="${titleText}">
         ${titleText}
       </td>
-      <td class="p-2 text-right font-bold ${isExpense ? 'text-rose-600' : 'text-emerald-600'}">
-        ${isExpense ? '-' : '+'}Rp ${window.formatNumber(tx.totalAmount)}
+      <td class="p-2 text-right">
+        ${amountDisplay}
       </td>
       <td class="p-2 text-center">
         <button onclick="deleteSingleTx('${tx.id}')" class="text-slate-400 hover:text-rose-600 transition p-1">
@@ -1690,12 +2018,48 @@ window.getFilteredTransactions = function(filter) {
   return window.transactions;
 };
 
+// FITUR LOGIKA PERHITUNGAN SALDO TERPISAH (MODAL VS KEUNTUNGAN + SUNTIK MODAL)
 window.updateSummaryStats = function() {
-  const allIncome = window.transactions.filter(t => t.type !== 'EXPENSE').reduce((sum, t) => sum + (t.totalAmount || 0), 0);
-  const allExpense = window.transactions.filter(t => t.type === 'EXPENSE').reduce((sum, t) => sum + (t.totalAmount || 0), 0);
-  const totalBalance = allIncome - allExpense;
+  let allIncome = 0;
+  let allExpense = 0;
+
+  let totalCapitalBalance = 0;
+  let totalProfitBalance = 0;
+
+  window.transactions.forEach(t => {
+    if (t.type !== 'EXPENSE') {
+      // Pemasukan: Alokasi Modal & Keuntungan
+      const cap = (t.capitalShare || Math.round((t.totalAmount || 0) * 0.4));
+      const prof = (t.profitShare || ((t.totalAmount || 0) - cap));
+      totalCapitalBalance += cap;
+      totalProfitBalance += prof;
+      allIncome += (t.totalAmount || 0);
+    } else {
+      // Pengeluaran / Adjust Modal
+      if (t.isCapitalAdjustment) {
+        if (t.adjustmentType === 'INJECTION' || t.adjustmentType === 'EXACT_SET') {
+          totalCapitalBalance += (t.totalAmount || 0);
+          allIncome += (t.totalAmount || 0);
+        } else if (t.adjustmentType === 'WITHDRAW') {
+          totalCapitalBalance -= (t.totalAmount || 0);
+          allExpense += (t.totalAmount || 0);
+        }
+      } else {
+        if (t.fundSource === 'PROFIT') {
+          totalProfitBalance -= (t.totalAmount || 0);
+        } else {
+          totalCapitalBalance -= (t.totalAmount || 0);
+        }
+        allExpense += (t.totalAmount || 0);
+      }
+    }
+  });
+
+  const totalBalance = totalCapitalBalance + totalProfitBalance;
 
   const balanceEl = document.getElementById('statTotalBalance');
+  const capitalEl = document.getElementById('statCapitalBalance');
+  const profitBalEl = document.getElementById('statProfitBalance');
   const toggleIcon = document.getElementById('btnToggleBalanceIcon');
 
   if (toggleIcon) {
@@ -1705,28 +2069,32 @@ window.updateSummaryStats = function() {
   if (balanceEl) {
     if (window.isBalanceHidden) {
       balanceEl.innerText = 'Rp •••••••';
+      capitalEl.innerText = 'Rp •••••••';
+      profitBalEl.innerText = 'Rp •••••••';
       balanceEl.className = 'text-xl sm:text-2xl font-black text-amber-300 tracking-widest';
     } else {
       balanceEl.innerText = `${totalBalance < 0 ? '-' : ''}Rp ${window.formatNumber(Math.abs(totalBalance))}`;
+      capitalEl.innerText = `Rp ${window.formatNumber(totalCapitalBalance)}`;
+      profitBalEl.innerText = `Rp ${window.formatNumber(totalProfitBalance)}`;
       balanceEl.className = totalBalance >= 0 ? 'text-xl sm:text-2xl font-black text-emerald-400 tracking-tight' : 'text-xl sm:text-2xl font-black text-rose-400 tracking-tight';
     }
   }
 
   const todayTx = window.getFilteredTransactions('today');
   const incomeTx = todayTx.filter(t => t.type !== 'EXPENSE');
-  const expenseTx = todayTx.filter(t => t.type === 'EXPENSE');
+  const expenseTx = todayTx.filter(t => t.type === 'EXPENSE' && !t.isCapitalAdjustment);
 
-  const totalIncome = incomeTx.reduce((sum, t) => sum + (t.totalAmount || 0), 0);
-  const totalExpense = expenseTx.reduce((sum, t) => sum + (t.totalAmount || 0), 0);
-  const netProfit = totalIncome - totalExpense;
-  const totalSheets = incomeTx.reduce((sum, t) => sum + (t.totalSheets || 0), 0);
+  const totalIncomeToday = incomeTx.reduce((sum, t) => sum + (t.totalAmount || 0), 0);
+  const totalExpenseToday = expenseTx.reduce((sum, t) => sum + (t.totalAmount || 0), 0);
+  const netProfitToday = totalIncomeToday - totalExpenseToday;
+  const totalSheetsToday = incomeTx.reduce((sum, t) => sum + (t.totalSheets || 0), 0);
 
   if (document.getElementById('statTodayIncome'))
-    document.getElementById('statTodayIncome').innerText = `Rp ${window.formatNumber(totalIncome)}`;
+    document.getElementById('statTodayIncome').innerText = `Rp ${window.formatNumber(totalIncomeToday)}`;
   if (document.getElementById('statTodayTxCount'))
     document.getElementById('statTodayTxCount').innerText = `${incomeTx.length} Trx Masuk`;
   if (document.getElementById('statTodayExpense'))
-    document.getElementById('statTodayExpense').innerText = `Rp ${window.formatNumber(totalExpense)}`;
+    document.getElementById('statTodayExpense').innerText = `Rp ${window.formatNumber(totalExpenseToday)}`;
   if (document.getElementById('statTodayExpCount'))
     document.getElementById('statTodayExpCount').innerText = `${expenseTx.length} Pengeluaran`;
 
@@ -1736,13 +2104,13 @@ window.updateSummaryStats = function() {
       profitEl.innerText = 'Rp •••••••';
       profitEl.className = 'text-lg sm:text-xl font-black text-amber-300 mt-1 tracking-widest';
     } else {
-      profitEl.innerText = `${netProfit < 0 ? '-' : ''}Rp ${window.formatNumber(Math.abs(netProfit))}`;
-      profitEl.className = netProfit >= 0 ? 'text-lg sm:text-xl font-black text-amber-400 mt-1' : 'text-lg sm:text-xl font-black text-rose-400 mt-1';
+      profitEl.innerText = `${netProfitToday < 0 ? '-' : ''}Rp ${window.formatNumber(Math.abs(netProfitToday))}`;
+      profitEl.className = netProfitToday >= 0 ? 'text-lg sm:text-xl font-black text-amber-400 mt-1' : 'text-lg sm:text-xl font-black text-rose-400 mt-1';
     }
   }
 
   if (document.getElementById('statTodaySheets'))
-    document.getElementById('statTodaySheets').innerText = window.formatNumber(totalSheets);
+    document.getElementById('statTodaySheets').innerText = window.formatNumber(totalSheetsToday);
 };
 
 window.deleteSingleTx = async function(id) {
@@ -1951,7 +2319,7 @@ window.renderDailyRecap = function() {
   const filtered = window.transactions.filter(t => t.timestamp && t.timestamp.startsWith(dateStr));
 
   const incomeTxs = filtered.filter(t => t.type !== 'EXPENSE');
-  const expenseTxs = filtered.filter(t => t.type === 'EXPENSE');
+  const expenseTxs = filtered.filter(t => t.type === 'EXPENSE' && !t.isCapitalAdjustment);
 
   const totalIncome = incomeTxs.reduce((sum, t) => sum + (t.totalAmount || 0), 0);
   const totalExpense = expenseTxs.reduce((sum, t) => sum + (t.totalAmount || 0), 0);
@@ -1961,9 +2329,25 @@ window.renderDailyRecap = function() {
   const tunaiIncome = incomeTxs.filter(t => t.paymentMethod !== 'QRIS').reduce((sum, t) => sum + (t.totalAmount || 0), 0);
   const qrisIncome = incomeTxs.filter(t => t.paymentMethod === 'QRIS').reduce((sum, t) => sum + (t.totalAmount || 0), 0);
 
-  // Cumulative
-  const allIncome = window.transactions.filter(t => t.type !== 'EXPENSE').reduce((sum, t) => sum + (t.totalAmount || 0), 0);
-  const allExpense = window.transactions.filter(t => t.type === 'EXPENSE').reduce((sum, t) => sum + (t.totalAmount || 0), 0);
+  let allIncome = 0;
+  let allExpense = 0;
+
+  window.transactions.forEach(t => {
+    if (t.type !== 'EXPENSE') {
+      allIncome += (t.totalAmount || 0);
+    } else {
+      if (t.isCapitalAdjustment) {
+        if (t.adjustmentType === 'INJECTION' || t.adjustmentType === 'EXACT_SET') {
+          allIncome += (t.totalAmount || 0);
+        } else if (t.adjustmentType === 'WITHDRAW') {
+          allExpense += (t.totalAmount || 0);
+        }
+      } else {
+        allExpense += (t.totalAmount || 0);
+      }
+    }
+  });
+
   const cumBalance = allIncome - allExpense;
 
   document.getElementById('recapCumulativeBalance').innerText = `Rp ${window.formatNumber(cumBalance)}`;
@@ -1978,7 +2362,6 @@ window.renderDailyRecap = function() {
   document.getElementById('recapTotalSheets').innerText = `${window.formatNumber(totalSheets)} Lembar`;
   document.getElementById('recapIncomeTxCount').innerText = `${incomeTxs.length} Transaksi Penjualan`;
 
-  // Top Items
   const topContainer = document.getElementById('recapTopItemsContainer');
   topContainer.innerHTML = '';
   const itemCounts = {};
@@ -2001,7 +2384,6 @@ window.renderDailyRecap = function() {
     });
   }
 
-  // Multi Day Table Breakdown
   const multiTable = document.getElementById('recapMultiDayTableBody');
   multiTable.innerHTML = '';
   const groups = {};
@@ -2009,7 +2391,7 @@ window.renderDailyRecap = function() {
     const day = t.timestamp ? t.timestamp.slice(0, 10) : 'Unknown';
     if (!groups[day]) groups[day] = { income: 0, expense: 0, sheets: 0 };
     if (t.type === 'EXPENSE') {
-      groups[day].expense += (t.totalAmount || 0);
+      if (!t.isCapitalAdjustment) groups[day].expense += (t.totalAmount || 0);
     } else {
       groups[day].income += (t.totalAmount || 0);
       groups[day].sheets += (t.totalSheets || 0);
@@ -2044,7 +2426,7 @@ window.renderMonthlyRecap = function() {
   const filtered = window.transactions.filter(t => t.timestamp && t.timestamp.startsWith(monthStr));
 
   const incomeTxs = filtered.filter(t => t.type !== 'EXPENSE');
-  const expenseTxs = filtered.filter(t => t.type === 'EXPENSE');
+  const expenseTxs = filtered.filter(t => t.type === 'EXPENSE' && !t.isCapitalAdjustment);
 
   const totalIncome = incomeTxs.reduce((sum, t) => sum + (t.totalAmount || 0), 0);
   const totalExpense = expenseTxs.reduce((sum, t) => sum + (t.totalAmount || 0), 0);
@@ -2067,7 +2449,6 @@ window.renderMonthlyRecap = function() {
   document.getElementById('mRecapTotalSheets').innerText = `${window.formatNumber(totalSheets)} Lembar`;
   document.getElementById('mRecapActiveDays').innerText = `${activeDays} Hari Transaksi Aktif`;
 
-  // Expense Categories Breakdown
   const catContainer = document.getElementById('mRecapExpenseCategoriesContainer');
   catContainer.innerHTML = '';
   const catTotals = {};
@@ -2093,7 +2474,6 @@ window.renderMonthlyRecap = function() {
     });
   }
 
-  // Top Products Month
   const prodContainer = document.getElementById('mRecapTopProductsContainer');
   prodContainer.innerHTML = '';
   const prodTotals = {};
@@ -2117,7 +2497,6 @@ window.renderMonthlyRecap = function() {
     });
   }
 
-  // Monthly Breakdown Table
   const breakTable = document.getElementById('mRecapDailyBreakdownTableBody');
   breakTable.innerHTML = '';
   const daysInMonth = {};
@@ -2126,7 +2505,7 @@ window.renderMonthlyRecap = function() {
     if (!daysInMonth[day]) daysInMonth[day] = { income: 0, expense: 0, txCount: 0 };
     daysInMonth[day].txCount++;
     if (t.type === 'EXPENSE') {
-      daysInMonth[day].expense += (t.totalAmount || 0);
+      if (!t.isCapitalAdjustment) daysInMonth[day].expense += (t.totalAmount || 0);
     } else {
       daysInMonth[day].income += (t.totalAmount || 0);
     }
@@ -2339,7 +2718,7 @@ window.exportToWordDocument = function() {
   const filteredTxs = window.getFilteredTransactions(timeFilter);
 
   const incomeTxs = filteredTxs.filter(t => t.type !== 'EXPENSE');
-  const expenseTxs = filteredTxs.filter(t => t.type === 'EXPENSE');
+  const expenseTxs = filteredTxs.filter(t => t.type === 'EXPENSE' && !t.isCapitalAdjustment);
 
   const totalIncome = incomeTxs.reduce((sum, t) => sum + (t.totalAmount || 0), 0);
   const totalExpense = expenseTxs.reduce((sum, t) => sum + (t.totalAmount || 0), 0);
@@ -2349,15 +2728,25 @@ window.exportToWordDocument = function() {
   filteredTxs.forEach((tx, idx) => {
     const d = new Date(tx.timestamp).toLocaleString('id-ID');
     const isExp = tx.type === 'EXPENSE';
-    const itemsStr = isExp ? `[${tx.category}] ${tx.name}` : (tx.items ? tx.items.map(i => `${i.name} (${i.qty}x)`).join(', ') : 'Penjualan');
+    let itemsStr = '';
+    if (isExp) {
+      if (tx.isCapitalAdjustment) {
+        itemsStr = `[Suntik/Adjust Modal] ${tx.name}`;
+      } else {
+        itemsStr = `[${tx.category}] ${tx.name} (${tx.fundSource === 'PROFIT' ? 'Laba' : 'Modal'})`;
+      }
+    } else {
+      itemsStr = tx.items ? tx.items.map(i => `${i.name} (${i.qty}x)`).join(', ') : 'Penjualan';
+    }
+
     rowsHtml += `
       <tr>
         <td style="border:1px solid #cbd5e1; padding:8px; text-align:center;">${idx + 1}</td>
         <td style="border:1px solid #cbd5e1; padding:8px;">${d}</td>
-        <td style="border:1px solid #cbd5e1; padding:8px;">${isExp ? 'PENGELUARAN' : 'PEMASUKAN'}</td>
+        <td style="border:1px solid #cbd5e1; padding:8px;">${isExp ? (tx.isCapitalAdjustment ? 'MODAL' : 'PENGELUARAN') : 'PEMASUKAN'}</td>
         <td style="border:1px solid #cbd5e1; padding:8px;">${itemsStr}</td>
-        <td style="border:1px solid #cbd5e1; padding:8px; text-align:right; color:${isExp ? '#dc2626' : '#16a34a'}; font-weight:bold;">
-          ${isExp ? '-' : '+'}Rp ${window.formatNumber(tx.totalAmount)}
+        <td style="border:1px solid #cbd5e1; padding:8px; text-align:right; color:${isExp ? (tx.isCapitalAdjustment && tx.adjustmentType==='INJECTION' ? '#0284c7' : '#dc2626') : '#16a34a'}; font-weight:bold;">
+          ${isExp ? (tx.isCapitalAdjustment && tx.adjustmentType==='INJECTION' ? '+' : '-') : '+'}Rp ${window.formatNumber(tx.totalAmount)}
         </td>
       </tr>
     `;
