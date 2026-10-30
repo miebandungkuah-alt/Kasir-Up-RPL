@@ -1064,11 +1064,11 @@ window.openCapitalModal = function() {
   const modal = document.getElementById('capitalModal');
   const currentCapEl = document.getElementById('currentCapModalDisplay');
   
-  // Hitung modal saat ini
+  // Hitung modal saat ini (Hanya bertambah/berkurang lewat penyesuaian manual/pengeluaran modal)
   let currentCap = 0;
   window.transactions.forEach(t => {
     if (t.type !== 'EXPENSE') {
-      currentCap += (t.capitalShare || Math.round((t.totalAmount || 0) * 0.4));
+      currentCap += (t.capitalShare || 0);
     } else {
       if (t.fundSource !== 'PROFIT') {
         if (t.isCapitalAdjustment) {
@@ -1144,7 +1144,6 @@ window.processCapitalAdjustment = async function() {
   };
 
   if (actionType === 'INJECTION') {
-    // Jika suntik modal, kita catat sebagai transaksi penambah modal (negative expense/penambahan)
     tx.isCapitalInjection = true;
   }
 
@@ -1177,7 +1176,7 @@ window.processCapitalExactReset = async function() {
   let currentCap = 0;
   window.transactions.forEach(t => {
     if (t.type !== 'EXPENSE') {
-      currentCap += (t.capitalShare || Math.round((t.totalAmount || 0) * 0.4));
+      currentCap += (t.capitalShare || 0);
     } else {
       if (t.fundSource !== 'PROFIT') {
         if (t.isCapitalAdjustment) {
@@ -1206,7 +1205,7 @@ window.processCapitalExactReset = async function() {
     name: `Penyesuaian Atur Ulang Nominal Modal ke Rp ${window.formatNumber(targetExact)}`,
     category: 'Suntik / Adjust Modal',
     fundSource: 'MODAL',
-    totalAmount: diff, // Bisa positif / negatif selisih
+    totalAmount: diff,
     isCapitalAdjustment: true,
     adjustmentType: 'EXACT_SET',
     totalSheets: 0
@@ -1811,9 +1810,10 @@ window.processTransaction = async function() {
 
   const totalSheets = window.cart.reduce((sum, i) => sum + i.qty, 0);
 
-  // Perhitungan Estimasi Alokasi Modal vs Keuntungan (Default 40% Modal, 60% Keuntungan)
-  const estimatedCapital = Math.round(total * 0.4);
-  const estimatedProfit = total - estimatedCapital;
+  // [PERUBAHAN MODAL] Transaksi beli TIDAK menambah modal secara otomatis.
+  // Seluruh hasil pemasukan dialokasikan langsung ke porsi Keuntungan/Laba Bersih.
+  const estimatedCapital = 0; 
+  const estimatedProfit = total;
 
   const tx = {
     id: 'TX' + Date.now(),
@@ -1891,7 +1891,7 @@ window.saveExpenseTransaction = async function() {
     timestamp: new Date().toISOString(),
     name: name,
     category: category,
-    fundSource: fundSource, // Modal vs Keuntungan
+    fundSource: fundSource,
     totalAmount: amount,
     totalSheets: 0
   };
@@ -2018,7 +2018,7 @@ window.getFilteredTransactions = function(filter) {
   return window.transactions;
 };
 
-// FITUR LOGIKA PERHITUNGAN SALDO TERPISAH (MODAL VS KEUNTUNGAN + SUNTIK MODAL)
+// FITUR LOGIKA PERHITUNGAN SALDO TERPISAH (MODAL MANUAL VS KEUNTUNGAN)
 window.updateSummaryStats = function() {
   let allIncome = 0;
   let allExpense = 0;
@@ -2028,14 +2028,14 @@ window.updateSummaryStats = function() {
 
   window.transactions.forEach(t => {
     if (t.type !== 'EXPENSE') {
-      // Pemasukan: Alokasi Modal & Keuntungan
-      const cap = (t.capitalShare || Math.round((t.totalAmount || 0) * 0.4));
-      const prof = (t.profitShare || ((t.totalAmount || 0) - cap));
+      // Pemasukan: Hanya menambah Keuntungan, Modal TIDAK bertambah otomatis
+      const cap = (t.capitalShare || 0);
+      const prof = (t.profitShare !== undefined ? t.profitShare : (t.totalAmount || 0));
       totalCapitalBalance += cap;
       totalProfitBalance += prof;
       allIncome += (t.totalAmount || 0);
     } else {
-      // Pengeluaran / Adjust Modal
+      // Pengeluaran / Adjust Modal Manual
       if (t.isCapitalAdjustment) {
         if (t.adjustmentType === 'INJECTION' || t.adjustmentType === 'EXACT_SET') {
           totalCapitalBalance += (t.totalAmount || 0);
