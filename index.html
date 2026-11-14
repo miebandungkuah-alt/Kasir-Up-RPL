@@ -70,7 +70,7 @@ body { font-family: 'Inter', sans-serif; }
             <i class="fa-solid fa-cloud-check text-[9px]"></i> Memuat Data...
           </span>
         </div>
-        <p class="text-xs text-slate-400">Pencatatan Pemasukan, Pengeluaran & Rekap Keuangan (Modal vs Keuntungan)</p>
+        <p class="text-xs text-slate-400">Sistem Kasir & Pencatatan Transaksi Harian</p>
       </div>
     </div>
     <div class="flex items-center space-x-2 sm:space-x-3">
@@ -328,7 +328,7 @@ body { font-family: 'Inter', sans-serif; }
           </div>
         </div>
 
-        <!-- OPSI FITUR FITUR PEMISAH UANG MODAL VS KEUNTUNGAN -->
+        <!-- OPSI PEMISAH UANG MODAL VS KEUNTUNGAN -->
         <div class="bg-white p-3 rounded-lg border border-amber-200 space-y-2">
           <label class="block text-xs font-bold text-slate-800 flex items-center gap-1">
             <i class="fa-solid fa-building-columns text-amber-500"></i> Sumber Uang Mana yang Digunakan?
@@ -358,52 +358,11 @@ body { font-family: 'Inter', sans-serif; }
     </div>
   </section>
 
-  <!-- RIGHT COLUMN: Laporan Pemasukan, Pengeluaran & Export Word (5 cols on lg) -->
+  <!-- RIGHT COLUMN: Ringkasan Operasional Hari Ini & Riwayat Transaksi (5 cols on lg) -->
+  <!-- Total Saldo Kas, Saldo Modal & Saldo Keuntungan telah dipindahkan ke Rekap Keuangan demi privasi -->
   <section class="lg:col-span-5 space-y-5">
-    <!-- Summary Stats Cards dengan Pemisahan Saldo Modal & Keuntungan -->
+    <!-- Summary Stats Cards Hari Ini (Operasional Harian) -->
     <div class="grid grid-cols-2 gap-3">
-      <!-- CARD TOTAL SALDO KAS TOKO -->
-      <div class="bg-gradient-to-br from-blue-900 to-indigo-900 p-3.5 rounded-xl border border-blue-700 shadow-sm flex flex-col justify-between text-white col-span-2 relative overflow-hidden group">
-        <div class="flex items-center justify-between">
-          <span class="text-[11px] font-bold text-blue-200 uppercase tracking-wider">Total Saldo Kas Toko Saat Ini</span>
-          <div class="flex items-center space-x-2">
-            <button onclick="toggleBalanceVisibility()" type="button" title="Sembunyikan / Tampilkan Nominal Saldo" class="text-blue-200 hover:text-white bg-blue-800/60 hover:bg-blue-800 p-1.5 rounded-lg border border-blue-600/50 transition flex items-center justify-center text-xs">
-              <i id="btnToggleBalanceIcon" class="fa-solid fa-eye"></i>
-            </button>
-            <i class="fa-solid fa-piggy-bank text-amber-400 text-sm"></i>
-          </div>
-        </div>
-        <div class="flex items-baseline justify-between mt-2">
-          <span class="text-xl sm:text-2xl font-black text-emerald-400 tracking-tight transition-all duration-200" id="statTotalBalance">Rp 0</span>
-          <span class="text-[10px] text-blue-200">Uang Modal + Uang Keuntungan</span>
-        </div>
-      </div>
-
-      <!-- CARD KHUSUS UANG MODAL & UANG KEUNTUNGAN -->
-      <div class="bg-slate-800 text-white p-3 rounded-xl border border-slate-700 shadow-sm flex flex-col justify-between">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-1.5">
-            <span class="text-[10px] font-bold text-slate-300 uppercase tracking-wider">Saldo Uang Modal</span>
-            <!-- TOMBOL MERUBAH / SUNTIK MODAL -->
-            <button onclick="openCapitalModal()" title="Suntik / Ubah Uang Modal" class="text-sky-400 hover:text-sky-200 bg-slate-700/80 hover:bg-slate-700 px-1.5 py-0.5 rounded text-[10px] border border-slate-600 transition flex items-center gap-1">
-              <i class="fa-solid fa-pen-to-square"></i> Ubah
-            </button>
-          </div>
-          <i class="fa-solid fa-boxes-packing text-sky-400 text-xs"></i>
-        </div>
-        <span class="text-base sm:text-lg font-extrabold text-sky-300 mt-1" id="statCapitalBalance">Rp 0</span>
-        <span class="text-[9px] text-slate-400 mt-0.5">Operasional & Stok</span>
-      </div>
-
-      <div class="bg-gradient-to-br from-amber-600 to-amber-700 text-white p-3 rounded-xl border border-amber-500 shadow-sm flex flex-col justify-between">
-        <div class="flex items-center justify-between">
-          <span class="text-[10px] font-bold text-amber-100 uppercase tracking-wider">Saldo Uang Keuntungan</span>
-          <i class="fa-solid fa-sack-dollar text-amber-200 text-xs"></i>
-        </div>
-        <span class="text-base sm:text-lg font-extrabold text-amber-200 mt-1" id="statProfitBalance">Rp 0</span>
-        <span class="text-[9px] text-amber-100 mt-0.5">Siap Disetor / Laba Bersih</span>
-      </div>
-
       <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
         <div class="flex items-center justify-between">
           <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Pemasukan Hari Ini</span>
@@ -422,24 +381,25 @@ body { font-family: 'Inter', sans-serif; }
         <span class="text-[10px] text-slate-400 mt-0.5" id="statTodayExpCount">0 Pengeluaran</span>
       </div>
 
-      <div class="bg-gradient-to-br from-slate-900 to-slate-800 p-3.5 rounded-xl border border-slate-700 shadow-sm flex flex-col justify-between text-white col-span-2 sm:col-span-1">
-        <div class="flex items-center justify-between">
-          <span class="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Laba Bersih Hari Ini</span>
-          <i class="fa-solid fa-chart-line text-amber-400 text-xs"></i>
-        </div>
-        <span class="text-lg sm:text-xl font-black text-amber-400 mt-1" id="statTodayProfit">Rp 0</span>
-        <button onclick="openRecapModal('daily')" class="text-[10px] text-emerald-400 hover:text-emerald-300 font-semibold mt-1 flex items-center gap-1 text-left">
-          <i class="fa-solid fa-square-poll-vertical"></i> Rincian Rekap Harian &rarr;
-        </button>
-      </div>
-
-      <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between col-span-2 sm:col-span-1">
+      <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
         <div class="flex items-center justify-between">
           <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Lembar</span>
           <i class="fa-solid fa-copy text-brand-500 text-xs"></i>
         </div>
         <span class="text-lg sm:text-xl font-black text-brand-600 mt-1" id="statTodaySheets">0</span>
         <span class="text-[10px] text-slate-400 mt-0.5">Lembar Dicetak Hari Ini</span>
+      </div>
+
+      <!-- Tombol Privat Akses Rekap Modal & Keuntungan -->
+      <div onclick="openRecapModal('daily')" class="bg-slate-900 hover:bg-slate-800 text-white p-3.5 rounded-xl border border-slate-700 shadow-sm flex flex-col justify-between cursor-pointer transition group">
+        <div class="flex items-center justify-between">
+          <span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1">
+            <i class="fa-solid fa-lock text-[10px]"></i> Rekap Privat
+          </span>
+          <i class="fa-solid fa-arrow-up-right-from-square text-slate-400 group-hover:text-white text-xs transition"></i>
+        </div>
+        <span class="text-sm font-extrabold text-white mt-1 leading-snug">Cek Modal & Keuntungan</span>
+        <span class="text-[10px] text-slate-400 mt-0.5 group-hover:text-emerald-300 transition">Buka Laporan Lengkap &rarr;</span>
       </div>
     </div>
 
@@ -460,7 +420,7 @@ body { font-family: 'Inter', sans-serif; }
 
       <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl space-y-2">
         <p class="text-xs text-blue-800">
-          <i class="fa-solid fa-circle-info mr-1"></i> File Word mencakup rincian Pemasukan, Pengeluaran, Uang Modal, serta Uang Keuntungan Bersih.
+          <i class="fa-solid fa-circle-info mr-1"></i> File Word mencakup rincian Pemasukan, Pengeluaran, serta Laba Bersih sesuai filter waktu.
         </p>
         <button onclick="exportToWordDocument()" class="w-full py-2.5 bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold rounded-lg shadow flex items-center justify-center gap-2 transition active:scale-95">
           <i class="fa-solid fa-download"></i> DOWNLOAD FILE WORD LAPORAN (.DOC)
@@ -500,7 +460,7 @@ body { font-family: 'Inter', sans-serif; }
   </section>
 </main>
 
-<!-- MODAL POPUP SUNTIK / KELOLA UANG MODAL (FITUR BARU) -->
+<!-- MODAL POPUP SUNTIK / KELOLA UANG MODAL -->
 <div id="capitalModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print" onclick="closeCapitalModal(event)">
   <div class="bg-white rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl relative border border-slate-200 text-slate-900 space-y-4" onclick="event.stopPropagation()">
     <button onclick="closeCapitalModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 w-8 h-8 rounded-full flex items-center justify-center transition">
@@ -625,7 +585,7 @@ body { font-family: 'Inter', sans-serif; }
   </div>
 </div>
 
-<!-- MODAL REKAP PENGHASILAN & KEUNTUNGAN HARIAN DAN BULANAN -->
+<!-- MODAL REKAP PENGHASILAN, MODAL & KEUNTUNGAN HARIAN DAN BULANAN (PRIVAT) -->
 <div id="recapModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 hidden no-print">
   <div class="bg-white rounded-2xl max-w-4xl w-full shadow-2xl overflow-hidden border border-slate-200 flex flex-col max-h-[92vh]">
     <!-- Modal Header -->
@@ -636,7 +596,7 @@ body { font-family: 'Inter', sans-serif; }
         </div>
         <div>
           <h3 class="font-bold text-base sm:text-lg">Rekapitulasi Penghasilan & Keuangan</h3>
-          <p class="text-xs text-slate-400">Pencatatan Omset, Modal, Pengeluaran Toko & Laba Bersih</p>
+          <p class="text-xs text-slate-400">Area Privat: Saldo Kas, Uang Modal, Pengeluaran Toko & Laba Bersih</p>
         </div>
       </div>
       <button onclick="closeRecapModal()" class="text-slate-400 hover:text-white text-xl p-1">
@@ -661,45 +621,80 @@ body { font-family: 'Inter', sans-serif; }
 
     <!-- SECTION 1: VIEW REKAP HARIAN -->
     <div id="viewRecapDaily" class="p-6 space-y-5 overflow-y-auto flex-grow text-xs">
+      
+      <!-- KARTU PRIVAT KEUANGAN UTAMA (DIPINDAHKAN DARI HALAMAN HOME) -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <!-- Total Saldo Kas Toko -->
+        <div class="bg-gradient-to-br from-blue-900 to-indigo-950 p-4 rounded-xl border border-blue-700 shadow-sm flex flex-col justify-between text-white">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-bold text-blue-200 uppercase tracking-wider">Total Saldo Kas Toko</span>
+            <div class="flex items-center space-x-2">
+              <button onclick="toggleBalanceVisibility()" type="button" title="Sembunyikan / Tampilkan Nominal Saldo" class="text-blue-200 hover:text-white bg-blue-800/60 hover:bg-blue-800 px-2 py-1 rounded-lg border border-blue-600/50 transition flex items-center justify-center text-xs">
+                <i id="btnToggleBalanceIcon" class="fa-solid fa-eye"></i>
+              </button>
+              <i class="fa-solid fa-piggy-bank text-amber-400 text-sm"></i>
+            </div>
+          </div>
+          <span class="text-xl sm:text-2xl font-black text-emerald-400 tracking-tight mt-2" id="recapCumulativeBalance">Rp 0</span>
+          <span class="text-[10px] text-blue-200 mt-1">Uang Modal + Uang Keuntungan</span>
+        </div>
+
+        <!-- Saldo Uang Modal + Tombol Ubah -->
+        <div class="bg-slate-800 text-white p-4 rounded-xl border border-slate-700 shadow-sm flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-bold text-slate-300 uppercase tracking-wider">Saldo Uang Modal</span>
+            <button onclick="openCapitalModal()" title="Suntik / Ubah Uang Modal" class="text-sky-300 hover:text-white bg-slate-700 hover:bg-sky-600 px-2 py-0.5 rounded text-[10px] border border-slate-600 transition flex items-center gap-1 font-bold">
+              <i class="fa-solid fa-pen-to-square"></i> Ubah / Suntik
+            </button>
+          </div>
+          <span class="text-xl sm:text-2xl font-extrabold text-sky-300 mt-2" id="recapCapitalBalance">Rp 0</span>
+          <span class="text-[10px] text-slate-400 mt-1">Dana Operasional & Stok</span>
+        </div>
+
+        <!-- Saldo Uang Keuntungan -->
+        <div class="bg-gradient-to-br from-amber-600 to-amber-700 text-white p-4 rounded-xl border border-amber-500 shadow-sm flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-bold text-amber-100 uppercase tracking-wider">Saldo Uang Keuntungan</span>
+            <i class="fa-solid fa-sack-dollar text-amber-200 text-sm"></i>
+          </div>
+          <span class="text-xl sm:text-2xl font-extrabold text-amber-100 mt-2" id="recapProfitBalance">Rp 0</span>
+          <span class="text-[10px] text-amber-100 mt-1">Siap Disetor / Penghasilan Bersih</span>
+        </div>
+      </div>
+
+      <!-- Filter Tanggal Harian -->
       <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex flex-wrap items-center justify-between gap-3">
         <div class="flex items-center space-x-2">
           <label class="text-xs font-bold text-slate-700">Pilih Tanggal:</label>
           <input type="date" id="recapDatePicker" onchange="onRecapDateChange()" class="px-3 py-1.5 text-xs font-semibold bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500">
         </div>
-        <div class="flex flex-wrap gap-1">
-          <button onclick="setRecapQuickDate('today')" class="px-3 py-1 text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-md hover:bg-emerald-100">Hari Ini</button>
-          <button onclick="setRecapQuickDate('yesterday')" class="px-3 py-1 text-xs font-semibold bg-white text-slate-600 border border-slate-300 rounded-md hover:bg-slate-100">Kemarin</button>
-        </div>
-      </div>
-
-      <!-- BANNER SALDO KAS PADA REKAP HARIAN -->
-      <div class="bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-950 p-4 rounded-xl text-white flex flex-wrap justify-between items-center gap-3 border border-blue-800 shadow-sm">
-        <div>
-          <span class="text-[10px] font-bold text-blue-300 uppercase tracking-wider block">Sisa Saldo Kas Toko Kumulatif</span>
-          <span class="text-2xl font-black text-emerald-400" id="recapCumulativeBalance">Rp 0</span>
-        </div>
-        <div class="text-right text-[11px] text-blue-200 space-y-0.5">
-          <div>Total Semua Pemasukan: <span class="font-bold text-white" id="recapTotalAllIncome">Rp 0</span></div>
-          <div>Total Semua Pengeluaran: <span class="font-bold text-rose-300" id="recapTotalAllExpense">Rp 0</span></div>
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="text-[11px] text-slate-500 hidden sm:inline">
+            Kumulatif Masuk: <strong class="text-slate-700" id="recapTotalAllIncome">Rp 0</strong> | Keluar: <strong class="text-rose-600" id="recapTotalAllExpense">Rp 0</strong>
+          </span>
+          <div class="flex gap-1">
+            <button onclick="setRecapQuickDate('today')" class="px-3 py-1 text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-md hover:bg-emerald-100">Hari Ini</button>
+            <button onclick="setRecapQuickDate('yesterday')" class="px-3 py-1 text-xs font-semibold bg-white text-slate-600 border border-slate-300 rounded-md hover:bg-slate-100">Kemarin</button>
+          </div>
         </div>
       </div>
 
       <!-- Key Performance Indicators Harian -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <div class="bg-emerald-50 border border-emerald-200 p-3.5 rounded-xl">
-          <div class="text-[10px] font-bold text-emerald-800 uppercase tracking-wider">Total Pemasukan (Omset)</div>
+          <div class="text-[10px] font-bold text-emerald-800 uppercase tracking-wider">Pemasukan Tanggal Ini</div>
           <div class="text-base sm:text-lg font-black text-emerald-700 mt-1" id="recapTotalIncome">Rp 0</div>
           <div class="text-[10px] text-emerald-600 mt-1 font-medium" id="recapIncomeBreakdown">Tunai: Rp 0 | QRIS: Rp 0</div>
         </div>
         <div class="bg-rose-50 border border-rose-200 p-3.5 rounded-xl">
-          <div class="text-[10px] font-bold text-rose-800 uppercase tracking-wider">Total Pengeluaran</div>
+          <div class="text-[10px] font-bold text-rose-800 uppercase tracking-wider">Pengeluaran Tanggal Ini</div>
           <div class="text-base sm:text-lg font-black text-rose-700 mt-1" id="recapTotalExpense">Rp 0</div>
           <div class="text-[10px] text-rose-600 mt-1 font-medium" id="recapExpenseCount">0 Transaksi Pengeluaran</div>
         </div>
         <div class="bg-gradient-to-br from-amber-500 to-amber-600 text-white p-3.5 rounded-xl shadow-sm">
-          <div class="text-[10px] font-extrabold uppercase tracking-wider text-amber-100">Keuntungan / Laba Bersih</div>
+          <div class="text-[10px] font-extrabold uppercase tracking-wider text-amber-100">Laba Bersih Tanggal Ini</div>
           <div class="text-lg sm:text-xl font-black mt-1" id="recapNetProfit">Rp 0</div>
-          <div class="text-[10px] text-amber-100 mt-1 font-semibold" id="recapProfitMarginStatus">Laba Bersih Hari Ini</div>
+          <div class="text-[10px] text-amber-100 mt-1 font-semibold" id="recapProfitMarginStatus">Selisih Masuk - Keluar</div>
         </div>
         <div class="bg-blue-50 border border-blue-200 p-3.5 rounded-xl">
           <div class="text-[10px] font-bold text-blue-800 uppercase tracking-wider">Lembar Cetak</div>
@@ -755,7 +750,7 @@ body { font-family: 'Inter', sans-serif; }
 
       <div class="bg-gradient-to-r from-slate-900 via-indigo-900 to-slate-900 p-4 rounded-xl text-white flex flex-wrap justify-between items-center gap-3 border border-indigo-700 shadow-sm">
         <div>
-          <span class="text-[10px] font-bold text-indigo-200 uppercase tracking-wider block">Saldo Kas Akhir Bulan Ini</span>
+          <span class="text-[10px] font-bold text-indigo-200 uppercase tracking-wider block">Laba Bersih Bulan Ini</span>
           <span class="text-2xl font-black text-amber-400" id="mRecapMonthlyBalance">Rp 0</span>
         </div>
         <div class="text-right text-[11px] text-slate-300">
@@ -1063,32 +1058,56 @@ window.formatNumber = function(num) {
   return new Intl.NumberFormat('id-ID').format(num || 0);
 };
 
-// FITUR KELOLA / SUNTIK UANG MODAL
-window.openCapitalModal = function() {
-  const modal = document.getElementById('capitalModal');
-  const currentCapEl = document.getElementById('currentCapModalDisplay');
-  
-  // Hitung modal saat ini (Hanya bertambah/berkurang lewat penyesuaian manual/pengeluaran modal)
-  let currentCap = 0;
+// HELPER: Hitung Saldo Kas, Modal & Keuntungan Kumulatif
+window.calculateCumulativeBalances = function() {
+  let allIncome = 0;
+  let allExpense = 0;
+  let totalCapitalBalance = 0;
+  let totalProfitBalance = 0;
+
   window.transactions.forEach(t => {
     if (t.type !== 'EXPENSE') {
-      currentCap += (t.capitalShare || 0);
+      const cap = (t.capitalShare || 0);
+      const prof = (t.profitShare !== undefined ? t.profitShare : (t.totalAmount || 0));
+      totalCapitalBalance += cap;
+      totalProfitBalance += prof;
+      allIncome += (t.totalAmount || 0);
     } else {
-      if (t.fundSource !== 'PROFIT') {
-        if (t.isCapitalAdjustment) {
-          if (t.adjustmentType === 'INJECTION' || t.adjustmentType === 'EXACT_SET') {
-            currentCap += (t.totalAmount || 0);
-          } else if (t.adjustmentType === 'WITHDRAW') {
-            currentCap -= (t.totalAmount || 0);
-          }
-        } else {
-          currentCap -= (t.totalAmount || 0);
+      if (t.isCapitalAdjustment) {
+        if (t.adjustmentType === 'INJECTION' || t.adjustmentType === 'EXACT_SET') {
+          totalCapitalBalance += (t.totalAmount || 0);
+          allIncome += (t.totalAmount || 0);
+        } else if (t.adjustmentType === 'WITHDRAW') {
+          totalCapitalBalance -= (t.totalAmount || 0);
+          allExpense += (t.totalAmount || 0);
         }
+      } else {
+        if (t.fundSource === 'PROFIT') {
+          totalProfitBalance -= (t.totalAmount || 0);
+        } else {
+          totalCapitalBalance -= (t.totalAmount || 0);
+        }
+        allExpense += (t.totalAmount || 0);
       }
     }
   });
 
-  if (currentCapEl) currentCapEl.innerText = `Rp ${window.formatNumber(currentCap)}`;
+  return {
+    allIncome,
+    allExpense,
+    totalCapitalBalance,
+    totalProfitBalance,
+    totalBalance: totalCapitalBalance + totalProfitBalance
+  };
+};
+
+// FITUR KELOLA / SUNTIK UANG MODAL
+window.openCapitalModal = function() {
+  const modal = document.getElementById('capitalModal');
+  const currentCapEl = document.getElementById('currentCapModalDisplay');
+  const balances = window.calculateCumulativeBalances();
+
+  if (currentCapEl) currentCapEl.innerText = `Rp ${window.formatNumber(balances.totalCapitalBalance)}`;
   document.getElementById('capitalAmountInput').value = '';
   document.getElementById('capitalExactAmountInput').value = '';
   document.getElementById('capitalNoteInput').value = '';
@@ -1123,7 +1142,7 @@ window.switchCapitalTab = function(mode) {
   }
 };
 
-// PROSES SUNTIK / TARIK MODAL (DIBUAT TRANSAKSI KONEK)
+// PROSES SUNTIK / TARIK MODAL
 window.processCapitalAdjustment = async function() {
   const actionType = document.getElementById('capitalActionType').value;
   const amount = parseFloat(document.getElementById('capitalAmountInput').value) || 0;
@@ -1136,12 +1155,12 @@ window.processCapitalAdjustment = async function() {
 
   const tx = {
     id: 'CAP' + Date.now(),
-    type: 'EXPENSE', // Dicatat di aliran kas modal
+    type: 'EXPENSE',
     timestamp: new Date().toISOString(),
     name: note,
     category: 'Suntik / Adjust Modal',
     fundSource: 'MODAL',
-    totalAmount: actionType === 'INJECTION' ? amount : amount,
+    totalAmount: amount,
     isCapitalAdjustment: true,
     adjustmentType: actionType,
     totalSheets: 0
@@ -1164,6 +1183,9 @@ window.processCapitalAdjustment = async function() {
 
   window.renderHistoryTable();
   window.updateSummaryStats();
+  if (!document.getElementById('recapModal').classList.contains('hidden')) {
+    window.renderRecapData();
+  }
   window.closeCapitalModal();
   window.showToast(`Berhasil ${actionType === 'INJECTION' ? 'Menambah Suntikan' : 'Menarik'} Modal Rp ${window.formatNumber(amount)}!`, 'success');
 };
@@ -1176,27 +1198,9 @@ window.processCapitalExactReset = async function() {
     return;
   }
 
-  // Hitung modal saat ini
-  let currentCap = 0;
-  window.transactions.forEach(t => {
-    if (t.type !== 'EXPENSE') {
-      currentCap += (t.capitalShare || 0);
-    } else {
-      if (t.fundSource !== 'PROFIT') {
-        if (t.isCapitalAdjustment) {
-          if (t.adjustmentType === 'INJECTION' || t.adjustmentType === 'EXACT_SET') {
-            currentCap += (t.totalAmount || 0);
-          } else if (t.adjustmentType === 'WITHDRAW') {
-            currentCap -= (t.totalAmount || 0);
-          }
-        } else {
-          currentCap -= (t.totalAmount || 0);
-        }
-      }
-    }
-  });
+  const balances = window.calculateCumulativeBalances();
+  const diff = targetExact - balances.totalCapitalBalance;
 
-  const diff = targetExact - currentCap;
   if (diff === 0) {
     window.showToast('Nominal modal sudah sama dengan saldo saat ini', 'info');
     return;
@@ -1228,6 +1232,9 @@ window.processCapitalExactReset = async function() {
 
   window.renderHistoryTable();
   window.updateSummaryStats();
+  if (!document.getElementById('recapModal').classList.contains('hidden')) {
+    window.renderRecapData();
+  }
   window.closeCapitalModal();
   window.showToast(`Nominal Modal Berhasil Diatur ke Rp ${window.formatNumber(targetExact)}!`, 'success');
 };
@@ -1279,11 +1286,11 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
-// FITUR TOGGLE NOMINAL SALDO TERSEMBUNYI
+// FITUR TOGGLE NOMINAL SALDO TERSEMBUNYI (DI HALAMAN REKAP KEUANGAN)
 window.toggleBalanceVisibility = function() {
   window.isBalanceHidden = !window.isBalanceHidden;
   localStorage.setItem('hideBalance', window.isBalanceHidden ? 'true' : 'false');
-  window.updateSummaryStats();
+  window.renderRecapData();
   if (window.isBalanceHidden) {
     window.showToast('Nominal Saldo Disembunyikan', 'info');
   } else {
@@ -1813,9 +1820,6 @@ window.processTransaction = async function() {
   }
 
   const totalSheets = window.cart.reduce((sum, i) => sum + i.qty, 0);
-
-  // [PERUBAHAN MODAL] Transaksi beli TIDAK menambah modal secara otomatis.
-  // Seluruh hasil pemasukan dialokasikan langsung ke porsi Keuntungan/Laba Bersih.
   const estimatedCapital = 0; 
   const estimatedProfit = total;
 
@@ -1859,7 +1863,6 @@ window.selectExpensePreset = function(name, price, category) {
   document.getElementById('expenseAmountInput').value = price;
   document.getElementById('expenseCategoryInput').value = category;
   
-  // Jika preset setoran, otomatis pilih radio Uang Keuntungan
   if (category === 'Setoran Toko' || name.toLowerCase().includes('setor')) {
     const radios = document.getElementsByName('expenseFundSource');
     radios.forEach(r => { if(r.value === 'PROFIT') r.checked = true; });
@@ -1873,7 +1876,6 @@ window.saveExpenseTransaction = async function() {
   const category = document.getElementById('expenseCategoryInput').value;
   const amount = parseFloat(document.getElementById('expenseAmountInput').value) || 0;
   
-  // Membaca Sumber Uang yang Dipilih (MODAL / PROFIT)
   const fundSourceRadios = document.getElementsByName('expenseFundSource');
   let fundSource = 'MODAL';
   fundSourceRadios.forEach(r => {
@@ -2022,75 +2024,14 @@ window.getFilteredTransactions = function(filter) {
   return window.transactions;
 };
 
-// FITUR LOGIKA PERHITUNGAN SALDO TERPISAH (MODAL MANUAL VS KEUNTUNGAN)
+// UPDATE SUMMARY STATS PADA HALAMAN HOME (HANYA OPERASIONAL HARI INI, TANPA SALDO MODAL/KEUNTUNGAN)
 window.updateSummaryStats = function() {
-  let allIncome = 0;
-  let allExpense = 0;
-
-  let totalCapitalBalance = 0;
-  let totalProfitBalance = 0;
-
-  window.transactions.forEach(t => {
-    if (t.type !== 'EXPENSE') {
-      // Pemasukan: Hanya menambah Keuntungan, Modal TIDAK bertambah otomatis
-      const cap = (t.capitalShare || 0);
-      const prof = (t.profitShare !== undefined ? t.profitShare : (t.totalAmount || 0));
-      totalCapitalBalance += cap;
-      totalProfitBalance += prof;
-      allIncome += (t.totalAmount || 0);
-    } else {
-      // Pengeluaran / Adjust Modal Manual
-      if (t.isCapitalAdjustment) {
-        if (t.adjustmentType === 'INJECTION' || t.adjustmentType === 'EXACT_SET') {
-          totalCapitalBalance += (t.totalAmount || 0);
-          allIncome += (t.totalAmount || 0);
-        } else if (t.adjustmentType === 'WITHDRAW') {
-          totalCapitalBalance -= (t.totalAmount || 0);
-          allExpense += (t.totalAmount || 0);
-        }
-      } else {
-        if (t.fundSource === 'PROFIT') {
-          totalProfitBalance -= (t.totalAmount || 0);
-        } else {
-          totalCapitalBalance -= (t.totalAmount || 0);
-        }
-        allExpense += (t.totalAmount || 0);
-      }
-    }
-  });
-
-  const totalBalance = totalCapitalBalance + totalProfitBalance;
-
-  const balanceEl = document.getElementById('statTotalBalance');
-  const capitalEl = document.getElementById('statCapitalBalance');
-  const profitBalEl = document.getElementById('statProfitBalance');
-  const toggleIcon = document.getElementById('btnToggleBalanceIcon');
-
-  if (toggleIcon) {
-    toggleIcon.className = window.isBalanceHidden ? "fa-solid fa-eye-slash text-amber-300" : "fa-solid fa-eye";
-  }
-
-  if (balanceEl) {
-    if (window.isBalanceHidden) {
-      balanceEl.innerText = 'Rp •••••••';
-      capitalEl.innerText = 'Rp •••••••';
-      profitBalEl.innerText = 'Rp •••••••';
-      balanceEl.className = 'text-xl sm:text-2xl font-black text-amber-300 tracking-widest';
-    } else {
-      balanceEl.innerText = `${totalBalance < 0 ? '-' : ''}Rp ${window.formatNumber(Math.abs(totalBalance))}`;
-      capitalEl.innerText = `Rp ${window.formatNumber(totalCapitalBalance)}`;
-      profitBalEl.innerText = `Rp ${window.formatNumber(totalProfitBalance)}`;
-      balanceEl.className = totalBalance >= 0 ? 'text-xl sm:text-2xl font-black text-emerald-400 tracking-tight' : 'text-xl sm:text-2xl font-black text-rose-400 tracking-tight';
-    }
-  }
-
   const todayTx = window.getFilteredTransactions('today');
   const incomeTx = todayTx.filter(t => t.type !== 'EXPENSE');
   const expenseTx = todayTx.filter(t => t.type === 'EXPENSE' && !t.isCapitalAdjustment);
 
   const totalIncomeToday = incomeTx.reduce((sum, t) => sum + (t.totalAmount || 0), 0);
   const totalExpenseToday = expenseTx.reduce((sum, t) => sum + (t.totalAmount || 0), 0);
-  const netProfitToday = totalIncomeToday - totalExpenseToday;
   const totalSheetsToday = incomeTx.reduce((sum, t) => sum + (t.totalSheets || 0), 0);
 
   if (document.getElementById('statTodayIncome'))
@@ -2101,18 +2042,6 @@ window.updateSummaryStats = function() {
     document.getElementById('statTodayExpense').innerText = `Rp ${window.formatNumber(totalExpenseToday)}`;
   if (document.getElementById('statTodayExpCount'))
     document.getElementById('statTodayExpCount').innerText = `${expenseTx.length} Pengeluaran`;
-
-  const profitEl = document.getElementById('statTodayProfit');
-  if (profitEl) {
-    if (window.isBalanceHidden) {
-      profitEl.innerText = 'Rp •••••••';
-      profitEl.className = 'text-lg sm:text-xl font-black text-amber-300 mt-1 tracking-widest';
-    } else {
-      profitEl.innerText = `${netProfitToday < 0 ? '-' : ''}Rp ${window.formatNumber(Math.abs(netProfitToday))}`;
-      profitEl.className = netProfitToday >= 0 ? 'text-lg sm:text-xl font-black text-amber-400 mt-1' : 'text-lg sm:text-xl font-black text-rose-400 mt-1';
-    }
-  }
-
   if (document.getElementById('statTodaySheets'))
     document.getElementById('statTodaySheets').innerText = window.formatNumber(totalSheetsToday);
 };
@@ -2333,30 +2262,29 @@ window.renderDailyRecap = function() {
   const tunaiIncome = incomeTxs.filter(t => t.paymentMethod !== 'QRIS').reduce((sum, t) => sum + (t.totalAmount || 0), 0);
   const qrisIncome = incomeTxs.filter(t => t.paymentMethod === 'QRIS').reduce((sum, t) => sum + (t.totalAmount || 0), 0);
 
-  let allIncome = 0;
-  let allExpense = 0;
+  // Hitung saldo modal, keuntungan & kas kumulatif untuk area privat rekap
+  const balances = window.calculateCumulativeBalances();
+  const toggleIcon = document.getElementById('btnToggleBalanceIcon');
+  if (toggleIcon) {
+    toggleIcon.className = window.isBalanceHidden ? "fa-solid fa-eye-slash text-amber-300" : "fa-solid fa-eye";
+  }
 
-  window.transactions.forEach(t => {
-    if (t.type !== 'EXPENSE') {
-      allIncome += (t.totalAmount || 0);
-    } else {
-      if (t.isCapitalAdjustment) {
-        if (t.adjustmentType === 'INJECTION' || t.adjustmentType === 'EXACT_SET') {
-          allIncome += (t.totalAmount || 0);
-        } else if (t.adjustmentType === 'WITHDRAW') {
-          allExpense += (t.totalAmount || 0);
-        }
-      } else {
-        allExpense += (t.totalAmount || 0);
-      }
-    }
-  });
+  const cumBalEl = document.getElementById('recapCumulativeBalance');
+  const capBalEl = document.getElementById('recapCapitalBalance');
+  const profBalEl = document.getElementById('recapProfitBalance');
 
-  const cumBalance = allIncome - allExpense;
+  if (window.isBalanceHidden) {
+    cumBalEl.innerText = 'Rp •••••••';
+    capBalEl.innerText = 'Rp •••••••';
+    profBalEl.innerText = 'Rp •••••••';
+  } else {
+    cumBalEl.innerText = `${balances.totalBalance < 0 ? '-' : ''}Rp ${window.formatNumber(Math.abs(balances.totalBalance))}`;
+    capBalEl.innerText = `Rp ${window.formatNumber(balances.totalCapitalBalance)}`;
+    profBalEl.innerText = `Rp ${window.formatNumber(balances.totalProfitBalance)}`;
+  }
 
-  document.getElementById('recapCumulativeBalance').innerText = `Rp ${window.formatNumber(cumBalance)}`;
-  document.getElementById('recapTotalAllIncome').innerText = `Rp ${window.formatNumber(allIncome)}`;
-  document.getElementById('recapTotalAllExpense').innerText = `Rp ${window.formatNumber(allExpense)}`;
+  document.getElementById('recapTotalAllIncome').innerText = `Rp ${window.formatNumber(balances.allIncome)}`;
+  document.getElementById('recapTotalAllExpense').innerText = `Rp ${window.formatNumber(balances.allExpense)}`;
 
   document.getElementById('recapTotalIncome').innerText = `Rp ${window.formatNumber(totalIncome)}`;
   document.getElementById('recapIncomeBreakdown').innerText = `Tunai: Rp ${window.formatNumber(tunaiIncome)} | QRIS: Rp ${window.formatNumber(qrisIncome)}`;
